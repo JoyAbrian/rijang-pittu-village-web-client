@@ -1,6 +1,6 @@
 const LandingPageSambutan = () => {
     return (
-        <section className="bg-gray-50 py-20 px-4 font-poppins">
+        <section className="bg-gray-50 py-10 px-4 font-poppins">
             <div className="flex justify-center">
                 <div className="flex flex-row items-center gap-10 w-full max-w-5xl">
                     <div className="flex-shrink-0">
