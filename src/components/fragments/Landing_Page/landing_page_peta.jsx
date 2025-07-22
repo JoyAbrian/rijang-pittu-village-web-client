@@ -2,18 +2,18 @@ const LandingPagePeta = () => {
     return (
         <section className="bg-gray-50 py-16 px-4 font-poppins">
             <div className="container mx-auto">
-                <h1 className="text-4xl font-bold text-red-700 mb-6 text-start">Peta Lokasi Desa</h1>
+                <h1 className="text-4xl font-bold text-red-700 mb-6 text-start">Peta Lokasi Kelurahan</h1>
                 <div className="flex flex-col lg:flex-row gap-8">
                     <div className="lg:w-1/2">
                         <div className="bg-white shadow-lg rounded-lg p-6">
-                            <h3 className="text-xl font-semibold mb-4">Batas Desa:</h3>
+                            <h3 className="text-xl font-semibold mb-4">Batas Kelurahan:</h3>
                             <div className="grid grid-cols-2 gap-y-2 mb-6">
                                 <div><p className="font-medium">Utara:</p><p>Kelurahan Kadidi</p></div>
                                 <div><p className="font-medium">Timur:</p><p>Kelurahan Macorawalie</p></div>
                                 <div><p className="font-medium">Selatan:</p><p>Kelurahan Timoreng Panua</p></div>
                                 <div><p className="font-medium">Barat:</p><p>Kelurahan Bulo</p></div>
                             </div>
-                            <h3 className="text-xl font-semibold mb-4">Luas Desa:</h3>
+                            <h3 className="text-xl font-semibold mb-4">Luas Kelurahan:</h3>
                             <p className="mb-6">1.738.600 m²</p>
                             <h3 className="text-xl font-semibold mb-4">Jumlah Penduduk:</h3>
                             <p>7.292 Jiwa</p>
