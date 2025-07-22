@@ -19,7 +19,7 @@ const Navbar = () => {
 
     return (
         <header
-            className={`fixed select-none top-0 left-0 w-full z-50 transition-all duration-300 ${isHome
+            className={`fixed font-poppins select-none top-0 left-0 w-full z-50 transition-all duration-300 ${isHome
                     ? isScrolled
                         ? 'bg-white shadow text-green-700'
                         : 'bg-transparent text-white'
@@ -40,6 +40,7 @@ const Navbar = () => {
                         { to: '/', label: 'Home' },
                         { to: '/profil', label: 'Profil Kelurahan' },
                         { to: '/infografis', label: 'Infografis' },
+                        { to: '/galeri', label: 'Galeri' },
                         { to: '/berita', label: 'Berita' },
                         { to: '/acara', label: 'Acara' },
                         { to: '/umkm', label: 'UMKM' },
