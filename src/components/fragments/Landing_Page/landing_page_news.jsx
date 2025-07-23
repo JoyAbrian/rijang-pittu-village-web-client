@@ -1,4 +1,4 @@
-import NewsCard from "../../elements/news/NewsCard";
+import NewsCard from "../../elements/NewsCard";
 
 const newsData = [
     {
