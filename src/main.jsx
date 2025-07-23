@@ -4,6 +4,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import './index.css'
 import LandingPage from './pages/landing_page'
 import ProfilePage from './pages/profile_page'
+import GalleryPage from './pages/gallery_page'
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
   {
     path: '/profil',
     element: <ProfilePage />,
+  },
+  {
+    path: '/galeri',
+    element: <GalleryPage />,
   },
 ])
 
