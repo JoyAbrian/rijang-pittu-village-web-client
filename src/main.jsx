@@ -5,6 +5,7 @@ import './index.css'
 import LandingPage from './pages/landing_page'
 import ProfilePage from './pages/profile_page'
 import GalleryPage from './pages/gallery_page'
+import NewsPage from './pages/news_page'
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: '/galeri',
     element: <GalleryPage />,
+  },
+  {
+    path: '/berita',
+    element: <NewsPage />,
   },
 ])
 
