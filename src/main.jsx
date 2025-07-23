@@ -7,6 +7,7 @@ import ProfilePage from './pages/profile_page'
 import GalleryPage from './pages/gallery_page'
 import NewsPage from './pages/news_page'
 import InfographicPage from './pages/infographic_page'
+import EventPage from './pages/event_page'
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
   {
     path: '/berita',
     element: <NewsPage />,
+  },
+  {
+    path: '/acara',
+    element: <EventPage />,
   },
 ])
 
