@@ -8,6 +8,7 @@ import GalleryPage from './pages/gallery_page'
 import NewsPage from './pages/news_page'
 import InfographicPage from './pages/infographic_page'
 import EventPage from './pages/event_page'
+import UMKMPage from './pages/umkm_page'
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
   {
     path: '/acara',
     element: <EventPage />,
+  },
+  {
+    path: '/umkm',
+    element: <UMKMPage />,
   },
 ])
 
