@@ -9,7 +9,7 @@ import NewsPage from './pages/news_page'
 import InfographicPage from './pages/infographic_page'
 import EventPage from './pages/event_page'
 import UMKMPage from './pages/umkm_page'
-import ScrollToTop from './components/layouts/ScrollToTop'
+import SOTKPage from './pages/sotk_page'
 
 const router = createBrowserRouter([
   {
@@ -19,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: '/profil',
     element: <ProfilePage />,
+  },
+  {
+    path: '/profil/sotk',
+    element: <SOTKPage />,
   },
   {
     path: '/infografis',
