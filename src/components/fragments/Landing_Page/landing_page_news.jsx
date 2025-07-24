@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import NewsCard from "../../elements/NewsCard";
 
 const newsData = [
@@ -63,6 +64,14 @@ const LandingPageNews = () => {
                     />
                 ))}
             </div>
+            <div className="mt-8 flex justify-end">
+                    <Link
+                        to="/berita"
+                        className="px-5 py-2 text-sm font-medium bg-green-700 text-white rounded hover:bg-green-800 transition"
+                    >
+                        Lihat Lebih Banyak →
+                    </Link>
+                </div>
         </section>
     );
 }

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import GalleryImage from "../../elements/GalleryImage";
 
 const galleryItems = [
@@ -24,6 +25,14 @@ const ProfilePageGallery = () => {
                     {galleryItems.map((item, index) => (
                         <GalleryImage key={index} src={item.src} title={item.title} />
                     ))}
+                </div>
+                <div className="mt-8 flex justify-end">
+                    <Link
+                        to="/galeri"
+                        className="px-5 py-2 text-sm font-medium bg-green-700 text-white rounded hover:bg-green-800 transition"
+                    >
+                        Lihat Lebih Banyak →
+                    </Link>
                 </div>
             </div>
         </section>
