@@ -36,6 +36,22 @@ const eventList = [
         startTime: "17:00",
         endTime: "20:00",
     },
+    {
+        id: 5,
+        name: "Festival Kuliner Lokal",
+        location: "Lapangan Kelurahan",
+        eventDate: "2025-07-30",
+        startTime: "17:00",
+        endTime: "20:00",
+    },
+    {
+        id: 6,
+        name: "Festival Kuliner Lokal",
+        location: "Lapangan Kelurahan",
+        eventDate: "2025-07-30",
+        startTime: "17:00",
+        endTime: "20:00",
+    },
 ];
 
 const getEventStatus = (eventDate, startTime, endTime) => {
@@ -59,13 +75,20 @@ const EventPageFragment = () => {
         const statusB = getEventStatus(b.eventDate, b.startTime, b.endTime);
         return statusA - statusB;
     });
-
+    
     const totalPages = Math.ceil(sortedEvents.length / EVENTS_PER_PAGE);
-    const paginatedEvents = sortedEvents.slice(
-        (currentPage - 1) * EVENTS_PER_PAGE,
-        currentPage * EVENTS_PER_PAGE
-    );
+    const startIndex = (currentPage - 1) * EVENTS_PER_PAGE;
+    const paginatedEvents = sortedEvents.slice(startIndex, startIndex + EVENTS_PER_PAGE);
 
+    
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    };
+
+    
     return (
         <section className="px-4 pt-32 pb-20 bg-gray-50 font-poppins">
             <div className="max-w-7xl mx-auto">
@@ -87,24 +110,27 @@ const EventPageFragment = () => {
                     ))}
                 </div>
 
-                {/* PAGINATION */}
-                <div className="flex justify-center items-center mt-10 gap-2">
+                <div className="mt-10 flex justify-center items-center space-x-2 text-sm">
                     <button
-                        className="px-3 py-1 rounded bg-gray-200 text-gray-800 disabled:opacity-50"
-                        onClick={() => setCurrentPage((prev) => prev - 1)}
+                        onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
+                        className={`px-4 py-2 rounded-full border font-semibold transition ${
+                            currentPage === 1
+                                ? "text-gray-400 border-gray-300 cursor-not-allowed"
+                                : "text-green-700 border-green-600 hover:bg-green-100"
+                        }`}
                     >
-                        Prev
+                        ← Sebelumnya
                     </button>
 
                     {Array.from({ length: totalPages }, (_, i) => (
                         <button
                             key={i + 1}
-                            onClick={() => setCurrentPage(i + 1)}
-                            className={`px-3 py-1 rounded ${
+                            onClick={() => handlePageChange(i + 1)}
+                            className={`w-9 h-9 rounded-full border text-sm font-medium transition ${
                                 currentPage === i + 1
-                                    ? "bg-green-700 text-white"
-                                    : "bg-gray-200 text-gray-800"
+                                    ? "bg-green-700 text-white border-green-700"
+                                    : "text-green-700 border-green-600 hover:bg-green-100"
                             }`}
                         >
                             {i + 1}
@@ -112,11 +138,15 @@ const EventPageFragment = () => {
                     ))}
 
                     <button
-                        className="px-3 py-1 rounded bg-gray-200 text-gray-800 disabled:opacity-50"
-                        onClick={() => setCurrentPage((prev) => prev + 1)}
+                        onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
+                        className={`px-4 py-2 rounded-full border font-semibold transition ${
+                            currentPage === totalPages
+                                ? "text-gray-400 border-gray-300 cursor-not-allowed"
+                                : "text-green-700 border-green-600 hover:bg-green-100"
+                        }`}
                     >
-                        Next
+                        Selanjutnya →
                     </button>
                 </div>
             </div>

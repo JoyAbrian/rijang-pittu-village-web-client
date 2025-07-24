@@ -50,7 +50,6 @@ const GalleryPageFragment = () => {
                     ))}
                 </div>
 
-                {/* Pagination */}
                 <div className="flex justify-center items-center space-x-2 text-sm">
                     <button
                         onClick={() => handlePageChange(currentPage - 1)}

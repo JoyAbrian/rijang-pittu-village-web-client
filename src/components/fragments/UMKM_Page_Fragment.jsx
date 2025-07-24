@@ -75,23 +75,40 @@ const UMKMPageFragment = () => {
                     ))}
                 </div>
 
-                <div className="mt-10 flex justify-center items-center gap-4">
+                <div className="mt-10 flex justify-center items-center space-x-2 text-sm">
                     <button
                         onClick={handlePrev}
                         disabled={currentPage === 1}
-                        className="px-4 py-2 text-sm bg-green-700 text-white rounded disabled:opacity-50"
+                        className={`px-4 py-2 rounded-full border font-semibold transition ${currentPage === 1
+                                ? "text-gray-400 border-gray-300 cursor-not-allowed"
+                                : "text-green-700 border-green-600 hover:bg-green-100"
+                            }`}
                     >
-                        Sebelumnya
+                        ← Sebelumnya
                     </button>
-                    <span className="text-sm text-gray-700">
-                        Halaman {currentPage} dari {totalPages}
-                    </span>
+
+                    {Array.from({ length: totalPages }, (_, i) => (
+                        <button
+                            key={i + 1}
+                            onClick={() => setCurrentPage(i + 1)}
+                            className={`w-9 h-9 rounded-full border text-sm font-medium transition ${currentPage === i + 1
+                                    ? "bg-green-700 text-white border-green-700"
+                                    : "text-green-700 border-green-600 hover:bg-green-100"
+                                }`}
+                        >
+                            {i + 1}
+                        </button>
+                    ))}
+
                     <button
                         onClick={handleNext}
                         disabled={currentPage === totalPages}
-                        className="px-4 py-2 text-sm bg-green-700 text-white rounded disabled:opacity-50"
+                        className={`px-4 py-2 rounded-full border font-semibold transition ${currentPage === totalPages
+                                ? "text-gray-400 border-gray-300 cursor-not-allowed"
+                                : "text-green-700 border-green-600 hover:bg-green-100"
+                            }`}
                     >
-                        Selanjutnya
+                        Selanjutnya →
                     </button>
                 </div>
             </div>

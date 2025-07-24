@@ -9,6 +9,7 @@ import NewsPage from './pages/news_page'
 import InfographicPage from './pages/infographic_page'
 import EventPage from './pages/event_page'
 import UMKMPage from './pages/umkm_page'
+import ScrollToTop from './components/layouts/ScrollToTop'
 
 const router = createBrowserRouter([
   {
