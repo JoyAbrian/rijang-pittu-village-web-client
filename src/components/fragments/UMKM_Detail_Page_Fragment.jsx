@@ -1,3 +1,5 @@
+import UMKMSuggestionCard from "../elements/UMKMSuggestionCard";
+
 const mainUmkm = {
     name: "Warung Makan Sederhana",
     category: "Kuliner",
@@ -141,39 +143,16 @@ const UMKMDetailPageFragment = () => {
                     </h3>
                     <div className="space-y-8">
                         {suggestedUmkm.map((umkm) => (
-                            <div
+                            <UMKMSuggestionCard
                                 key={umkm.id}
-                                className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-4 p-5 bg-gray-50 rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition duration-300 ease-in-out cursor-pointer"
-                            >
-                                <img
-                                    src={umkm.image}
-                                    alt={umkm.name}
-                                    className="w-32 h-24 object-cover rounded-md flex-shrink-0 shadow-sm"
-                                />
-                                <div className="text-center sm:text-left">
-                                    <span className="inline-block bg-indigo-100 text-indigo-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2">
-                                        {umkm.category}
-                                    </span>
-                                    <h4 className="text-xl font-bold text-gray-800 hover:text-blue-600 transition duration-300 mb-1">
-                                        <a href="#" className="line-clamp-2">{umkm.name}</a>
-                                    </h4>
-                                    <p className="text-gray-600 text-sm line-clamp-2 mb-2">{umkm.description}</p>
-                                    <div className="flex items-center justify-center sm:justify-start text-gray-500 text-xs space-x-3">
-                                        <span className="flex items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                            {umkm.priceRange}
-                                        </span>
-                                        <span className="flex items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                            {umkm.openingHours}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+                                id={umkm.id}
+                                name={umkm.name}
+                                category={umkm.category}
+                                image={umkm.image}
+                                description={umkm.description}
+                                priceRange={umkm.priceRange}
+                                openingHours={umkm.openingHours}
+                            />
                         ))}
                     </div>
                 </div>

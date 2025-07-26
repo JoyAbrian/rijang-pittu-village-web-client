@@ -1,3 +1,5 @@
+import NewsSuggestionCard from "../elements/NewsSuggestionCard";
+
 const mainNewsArticle = {
     title: "Peningkatan Kualitas Pendidikan di Daerah Terpencil Melalui Program Digitalisasi",
     date: "Senin, 10 Februari 2025",
@@ -87,38 +89,14 @@ const NewsDetailPageFragment = () => {
                     </h3>
                     <div className="space-y-6">
                         {newsSuggestions.map((news) => (
-                            <div
+                            <NewsSuggestionCard
                                 key={news.id}
-                                className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out cursor-pointer shadow-sm"
-                            >
-                                <img
-                                    src={news.image}
-                                    alt={news.title}
-                                    className="w-24 h-16 object-cover rounded-md flex-shrink-0 shadow-sm"
-                                />
-                                <div>
-                                    <h4 className="text-lg font-semibold text-gray-800 hover:text-blue-600 transition duration-300">
-                                        <a href="#" className="line-clamp-2">{news.title}</a>
-                                    </h4>
-                                    <p className="text-gray-500 text-xs mt-1 flex items-center">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-3 w-3 mr-1 text-gray-400"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                            />
-                                        </svg>
-                                        {news.date}
-                                    </p>
-                                </div>
-                            </div>
+                                id={news.id}
+                                slug={news.slug}
+                                title={news.title}
+                                date={news.date}
+                                image={news.image}
+                            />
                         ))}
                     </div>
                 </div>

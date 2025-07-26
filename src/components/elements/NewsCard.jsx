@@ -1,4 +1,6 @@
-const NewsCard = ({ imageSrc, title, date, link }) => {
+import { Link } from "react-router-dom";
+
+const NewsCard = ({ imageSrc, title, slug, date }) => {
     return (
         <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300">
             <img src={imageSrc} alt={title} className="w-full h-48 object-cover"
@@ -28,21 +30,22 @@ const NewsCard = ({ imageSrc, title, date, link }) => {
                     </svg>
                     {date}
                 </p>
-                <a
-                    href={link}
-                    className="inline-flex items-center px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                > Baca Selengkapnya
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 ml-2"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                    >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
+                <Link to={"/berita/" + slug}>
+                    <div
+                        className="inline-flex items-center px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                    > Baca Selengkapnya
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4 ml-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                </Link>
             </div>
         </div>
     );
