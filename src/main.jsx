@@ -10,6 +10,8 @@ import InfographicPage from './pages/infographic_page'
 import EventPage from './pages/event_page'
 import UMKMPage from './pages/umkm_page'
 import SOTKPage from './pages/sotk_page'
+import NewsDetailPage from './pages/news_detail_page'
+import UMKMDetailPage from './pages/umkm_detail_page'
 
 const router = createBrowserRouter([
   {
@@ -37,12 +39,20 @@ const router = createBrowserRouter([
     element: <NewsPage />,
   },
   {
+    path: '/berita/:slug',
+    element: <NewsDetailPage />,
+  },
+  {
     path: '/acara',
     element: <EventPage />,
   },
   {
     path: '/umkm',
     element: <UMKMPage />,
+  },
+  {
+    path: '/umkm/:id',
+    element: <UMKMDetailPage />,
   },
 ])
 
