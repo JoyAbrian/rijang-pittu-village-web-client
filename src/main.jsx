@@ -12,6 +12,7 @@ import UMKMPage from './pages/umkm_page'
 import SOTKPage from './pages/sotk_page'
 import NewsDetailPage from './pages/news_detail_page'
 import UMKMDetailPage from './pages/umkm_detail_page'
+import LoginPage from './pages/login_page'
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
   {
     path: '/umkm/:id',
     element: <UMKMDetailPage />,
+  },
+  {
+    path: '/login',
+    element: <LoginPage />,
   },
 ])
 
