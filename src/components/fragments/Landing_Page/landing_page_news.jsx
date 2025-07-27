@@ -48,30 +48,38 @@ const newsData = [
 
 const LandingPageNews = () => {
     return (
-        <section className="bg-gray-50 py-16 px-4 font-poppins">
-            <div className="container mx-5">
-                <h1 className="text-4xl font-bold text-red-700 mb-2 text-start">Berita Kelurahan</h1>
-                <p className="text-lg text-neutral-600">Berita terbaru mengenai Kelurahan Rijang Pittu</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-6 mt-3">
-                {newsData.map((news) => (
-                    <NewsCard
-                        key={news.id}
-                        imageSrc={news.imageSrc}
-                        title={news.title}
-                        date={news.date}
-                        link={news.link}
-                    />
-                ))}
-            </div>
-            <div className="mt-8 flex justify-end">
+        <section className="bg-gray-50 py-10 sm:py-16 lg:py-20 font-poppins">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center sm:text-left mb-8">
+                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-red-700 mb-2">
+                        Berita Kelurahan
+                    </h1>
+                    <p className="text-base sm:text-lg text-neutral-600">
+                        Berita terbaru mengenai Kelurahan Rijang Pittu
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {newsData.slice(0, 4).map((news) => (
+                        <NewsCard
+                            key={news.id}
+                            imageSrc={news.imageSrc}
+                            title={news.title}
+                            date={news.date}
+                            link={news.link}
+                        />
+                    ))}
+                </div>
+
+                <div className="mt-8 text-center sm:text-right">
                     <Link
                         to="/berita"
-                        className="px-5 py-2 text-sm font-medium bg-green-700 text-white rounded hover:bg-green-800 transition"
+                        className="inline-block px-6 py-3 text-base font-medium bg-green-700 text-white rounded-lg hover:bg-green-800 transition transform hover:-translate-y-1 shadow-md"
                     >
-                        Lihat Lebih Banyak →
+                        Lihat Lebih Banyak &rarr;
                     </Link>
                 </div>
+            </div>
         </section>
     );
 }

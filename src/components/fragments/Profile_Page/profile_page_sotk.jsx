@@ -18,21 +18,37 @@ const pegawaiList = [
         foto: "/images/pegawai3.jpg",
     },
     {
-        nama: "Sudirman",
-        jabatan: "Bendahara",
-        foto: "/images/pegawai3.jpg",
+        nama: "Dewi Lestari",
+        jabatan: "Kepala Seksi Pemerintahan",
+        foto: "/images/pegawai4.jpg",
+    },
+    {
+        nama: "Budi Santoso",
+        jabatan: "Kepala Seksi Kesejahteraan Sosial",
+        foto: "/images/pegawai5.jpg",
+    },
+    {
+        nama: "Siti Aminah",
+        jabatan: "Kepala Seksi Pemberdayaan Masyarakat",
+        foto: "/images/pegawai6.jpg",
     },
 ];
 
 const ProfilePageSOTK = () => {
     return (
-        <section className="bg-gray-50 py-16 px-4 font-poppins">
+        <section className="bg-gray-50 py-10 sm:py-16 lg:py-20 px-4 font-poppins">
             <div className="max-w-7xl mx-auto">
-                <h2 className="text-3xl sm:text-4xl font-bold text-red-700 mb-4 text-center">SOTK</h2>
-                <p className="text-center text-gray-700 mb-10">Struktur Organisasi dan Tata Kerja Kelurahan Rijang Pittu</p>
+                <div className="text-center mb-8 sm:mb-10">
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-red-700 mb-2">
+                        SOTK
+                    </h2>
+                    <p className="text-base sm:text-lg text-gray-700">
+                        Struktur Organisasi dan Tata Kerja Kelurahan Rijang Pittu
+                    </p>
+                </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8">
-                    {pegawaiList.map((pegawai, index) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
+                    {pegawaiList.slice(0, 4).map((pegawai, index) => (
                         <SOTKCard
                             key={index}
                             photo={pegawai.foto}
@@ -41,12 +57,13 @@ const ProfilePageSOTK = () => {
                         />
                     ))}
                 </div>
-                <div className="mt-8 flex justify-end">
+
+                <div className="mt-8 sm:mt-12 text-center">
                     <Link
                         to="/profil/sotk"
-                        className="px-5 py-2 text-sm font-medium bg-green-700 text-white rounded hover:bg-green-800 transition"
+                        className="inline-block px-6 py-3 text-base font-medium bg-green-700 text-white rounded-lg hover:bg-green-800 transition transform hover:-translate-y-1 shadow-md"
                     >
-                        Lihat Selengkapnya →
+                        Lihat Selengkapnya &rarr;
                     </Link>
                 </div>
             </div>

@@ -12,26 +12,29 @@ const galleryItems = [
 
 const ProfilePageGallery = () => {
     return (
-        <section className="bg-gray-50 py-24 px-4 font-poppins">
+        <section className="bg-gray-50 py-10 sm:py-16 lg:py-20 px-4 font-poppins">
             <div className="max-w-7xl mx-auto">
-                <h2 className="text-3xl sm:text-4xl font-bold text-red-700 mb-2">
-                    GALERI
-                </h2>
-                <p className="text-gray-700 mb-10">
-                    Menampilkan foto-foto kegiatan dan lingkungan di sekitar Kelurahan Rijang Pittu
-                </p>
+                <div className="text-center mb-8 sm:mb-10">
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-red-700 mb-2">
+                        GALERI
+                    </h2>
+                    <p className="text-base sm:text-lg text-gray-700">
+                        Menampilkan foto-foto kegiatan dan lingkungan di sekitar Kelurahan Rijang Pittu
+                    </p>
+                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                     {galleryItems.map((item, index) => (
                         <GalleryImage key={index} src={item.src} title={item.title} />
                     ))}
                 </div>
-                <div className="mt-8 flex justify-end">
+
+                <div className="mt-8 sm:mt-12 text-center">
                     <Link
                         to="/galeri"
-                        className="px-5 py-2 text-sm font-medium bg-green-700 text-white rounded hover:bg-green-800 transition"
+                        className="inline-block px-6 py-3 text-base font-medium bg-green-700 text-white rounded-lg hover:bg-green-800 transition transform hover:-translate-y-1 shadow-md"
                     >
-                        Lihat Lebih Banyak →
+                        Lihat Lebih Banyak &rarr;
                     </Link>
                 </div>
             </div>
