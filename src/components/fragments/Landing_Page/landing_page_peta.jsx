@@ -11,9 +11,9 @@ const LandingPagePeta = () => {
                             <strong>🧭 Batas Kelurahan:</strong>
                             <ul className="pl-8 text-md">
                                 <li><strong>Utara:</strong> Kelurahan Pangkadjene</li>
-                                <li><strong>Selatan:</strong> Kelurahan Timoreng Panua</li>
-                                <li><strong>Timur:</strong> Kelurahan Macorawalie</li>
-                                <li><strong>Barat:</strong> Kelurahan Bulo</li>
+                                <li><strong>Selatan:</strong> Desa Tanete</li>
+                                <li><strong>Timur:</strong>  </li>
+                                <li><strong>Barat:</strong>  </li>
                             </ul>
                         </div>
                         <div>
