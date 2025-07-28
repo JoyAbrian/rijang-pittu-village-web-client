@@ -13,6 +13,7 @@ import SOTKPage from './pages/sotk_page'
 import NewsDetailPage from './pages/news_detail_page'
 import UMKMDetailPage from './pages/umkm_detail_page'
 import LoginPage from './pages/login_page'
+import DashboardPage from './pages/dashboard_page'
 
 const router = createBrowserRouter([
   {
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
     path: '/login',
     element: <LoginPage />,
   },
+  {
+    path: '/dashboard',
+    element: <DashboardPage />,
+  }
 ])
 
 createRoot(document.getElementById('root')).render(
