@@ -9,25 +9,32 @@ const DashboardPage = () => {
 
     useEffect(() => {
         switch (location.pathname) {
-            case '/':
-                setActiveMenuItem('Dashboard');
+            case '/dashboard':
+            case '/dashboard/':
+                setActiveMenuItem('Home');
                 break;
-            case '/analytics':
-                setActiveMenuItem('Analytics');
+            case '/dashboard/sotk':
+                setActiveMenuItem('SOTK');
                 break;
-            case '/reports':
-                setActiveMenuItem('Reports');
+            case '/dashboard/galeri':
+                setActiveMenuItem('Galeri');
                 break;
-            case '/settings':
-                setActiveMenuItem('Settings');
+            case '/dashboard/berita':
+                setActiveMenuItem('Berita');
+                break;
+            case '/dashboard/acara':
+                setActiveMenuItem('Acara');
+                break;
+            case '/dashboard/umkm':
+                setActiveMenuItem('UMKM');
                 break;
             default:
-                setActiveMenuItem('Not Found'); 
+                setActiveMenuItem('Not Found');
         }
     }, [location.pathname]);
 
     return (
-        <div className="flex h-screen bg-gray-100 font-sans">
+        <div className="flex h-screen bg-gray-100 font-poppins">
             <DashboardSidebar />
 
             <div className="flex-1 flex flex-col overflow-hidden">

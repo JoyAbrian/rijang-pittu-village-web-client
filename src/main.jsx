@@ -14,6 +14,8 @@ import NewsDetailPage from './pages/news_detail_page'
 import UMKMDetailPage from './pages/umkm_detail_page'
 import LoginPage from './pages/login_page'
 import DashboardPage from './pages/dashboard_page'
+import DashboardHome from './components/fragments/Dashboard_Page/Dashboard_Home_Fragment'
+import DashboardSOTK from './components/fragments/Dashboard_Page/Dashboard_SOTK_Fragment'
 
 const router = createBrowserRouter([
   {
@@ -63,6 +65,16 @@ const router = createBrowserRouter([
   {
     path: '/dashboard',
     element: <DashboardPage />,
+    children: [
+      {
+        index: true,
+        element: <DashboardHome />
+      },
+      {
+        path: 'sotk',
+        element: <DashboardSOTK />
+      },
+    ]
   }
 ])
 

@@ -14,7 +14,7 @@ const DashboardSidebar = () => {
     const location = useLocation();
 
     const menuItems = [
-        { path: '/dashboard/', name: 'Dashboard', icon: HouseDoorFill },
+        { path: '/dashboard/', name: 'Home', icon: HouseDoorFill },
         { path: '/dashboard/sotk', name: 'SOTK', icon: Diagram3Fill },
         { path: '/dashboard/galeri', name: 'Galeri', icon: ImageFill },
         { path: '/dashboard/berita', name: 'Berita', icon: Newspaper },
