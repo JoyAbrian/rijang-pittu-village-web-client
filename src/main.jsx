@@ -16,6 +16,7 @@ import LoginPage from './pages/login_page'
 import DashboardPage from './pages/dashboard_page'
 import DashboardHome from './components/fragments/Dashboard_Page/Dashboard_Home_Fragment'
 import DashboardSOTK from './components/fragments/Dashboard_Page/Dashboard_SOTK_Fragment'
+import DashboardGallery from './components/fragments/Dashboard_Page/Dashboard_Gallery_Fragment'
 
 const router = createBrowserRouter([
   {
@@ -73,6 +74,10 @@ const router = createBrowserRouter([
       {
         path: 'sotk',
         element: <DashboardSOTK />
+      },
+      {
+        path: 'galeri',
+        element: <DashboardGallery />
       },
     ]
   }
