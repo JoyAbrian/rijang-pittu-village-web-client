@@ -17,6 +17,7 @@ import DashboardPage from './pages/dashboard_page'
 import DashboardHome from './components/fragments/Dashboard_Page/Dashboard_Home_Fragment'
 import DashboardSOTK from './components/fragments/Dashboard_Page/Dashboard_SOTK_Fragment'
 import DashboardGallery from './components/fragments/Dashboard_Page/Dashboard_Gallery_Fragment'
+import DashboardNews from './components/fragments/Dashboard_Page/Dashboard_News_Fragment'
 
 const router = createBrowserRouter([
   {
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
       {
         path: 'galeri',
         element: <DashboardGallery />
+      },
+      {
+        path: 'berita',
+        element: <DashboardNews />
       },
     ]
   }

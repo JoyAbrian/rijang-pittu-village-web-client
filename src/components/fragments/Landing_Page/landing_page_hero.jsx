@@ -3,7 +3,7 @@ const LandingPageHero = () => {
         <section
             className="relative select-none h-screen bg-cover bg-center bg-no-repeat text-white font-inter"
             style={{
-                backgroundImage: 'url(/images/bg-hero-sidenreng-rappang.webp)'
+                backgroundImage: 'url(/images/ganggawa.png)'
             }}
         >
             <div className="absolute inset-0 bg-black bg-opacity-50"></div>

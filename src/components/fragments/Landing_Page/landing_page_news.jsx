@@ -23,27 +23,6 @@ const newsData = [
         date: "Rabu, 12 Februari 2025",
         link: "#",
     },
-    {
-        id: 4,
-        imageSrc: "https://placehold.co/600x400/FF33A1/FFFFFF?text=News+Image+4",
-        title: "Pemberdayaan UMKM Lokal Melalui Pelatihan Pemasaran Digital dan Keuangan",
-        date: "Jumat, 14 Februari 2025",
-        link: "#",
-    },
-    {
-        id: 5,
-        imageSrc: "https://placehold.co/600x400/33FFD1/FFFFFF?text=News+Image+5",
-        title: "Pengembangan Infrastruktur Pariwisata Berbasis Komunitas untuk Peningkatan Ekonomi Lokal",
-        date: "Minggu, 16 Februari 2025",
-        link: "#",
-    },
-    {
-        id: 6,
-        imageSrc: "https://placehold.co/600x400/FFD133/FFFFFF?text=News+Image+6",
-        title: "Sosialisasi Pentingnya Vaksinasi Booster untuk Mencegah Penyebaran Penyakit Menular",
-        date: "Selasa, 18 Februari 2025",
-        link: "#",
-    },
 ];
 
 const LandingPageNews = () => {
@@ -59,7 +38,7 @@ const LandingPageNews = () => {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {newsData.slice(0, 4).map((news) => (
                         <NewsCard
                             key={news.id}
