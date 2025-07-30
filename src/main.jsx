@@ -18,6 +18,7 @@ import DashboardHome from './components/fragments/Dashboard_Page/Dashboard_Home_
 import DashboardSOTK from './components/fragments/Dashboard_Page/Dashboard_SOTK_Fragment'
 import DashboardGallery from './components/fragments/Dashboard_Page/Dashboard_Gallery_Fragment'
 import DashboardNews from './components/fragments/Dashboard_Page/Dashboard_News_Fragment'
+import DashboardEvent from './components/fragments/Dashboard_Page/Dashboard_Event_Fragment'
 
 const router = createBrowserRouter([
   {
@@ -83,6 +84,10 @@ const router = createBrowserRouter([
       {
         path: 'berita',
         element: <DashboardNews />
+      },
+      {
+        path: 'acara',
+        element: <DashboardEvent />
       },
     ]
   }
