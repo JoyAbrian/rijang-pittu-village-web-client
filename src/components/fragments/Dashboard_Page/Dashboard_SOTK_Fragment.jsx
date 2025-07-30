@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { PencilSquare, Trash, PersonPlusFill } from 'react-bootstrap-icons';
 import SOTKFormModal from '../../elements/Modal/SOTKMemberForm';
 import ConfirmationModal from '../../elements/Modal/ConfirmationModal';
