@@ -5,19 +5,34 @@ const LoginPageFragment = () => {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    const handleLogin = (e) => {
-        e.preventDefault(); 
-
-        if (username === 'user' && password === 'password') {
-            setErrorMessage('');
-            console.log('Login successful!', { username, password });
-
-            alert('Login Successful!');
-        } else {
-            setErrorMessage('Invalid username or password.');
+    const handleLogin = async (e) => {
+        e.preventDefault();
+    
+        try {
+            const res = await fetch(import.meta.env.VITE_API_URL + "/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ username, password }),
+            });
+    
+            const data = await res.json();
+    
+            if (!res.ok) {
+                throw new Error(data.msg || "Login gagal");
+            }
+    
+            localStorage.setItem("token", data.access_token);
+    
+            setErrorMessage("");
+            alert("Login berhasil!");
+            window.location.href = "/dashboard";
+        } catch (err) {
+            setErrorMessage(err.message);
         }
     };
-
+    
     return (
         <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 font-sans text-gray-800 p-4 mt-20">
             <div className="flex flex-col lg:flex-row w-full max-w-5xl bg-white rounded-xl shadow-2xl overflow-hidden">

@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import DashboardSidebar from "../components/layouts/DashboardSidebar";
 import DashboardHeader from "../components/layouts/DashboardHeader";
 
 const DashboardPage = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const [activeMenuItem, setActiveMenuItem] = useState('');
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/");
+        }
+    }, [navigate]);
 
     useEffect(() => {
         switch (location.pathname) {

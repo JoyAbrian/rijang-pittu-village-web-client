@@ -17,8 +17,8 @@ const LandingPagePeta = () => {
                             <ul className="pl-8 text-md">
                                 <li><strong>Utara:</strong> Kelurahan Pangkadjene</li>
                                 <li><strong>Selatan:</strong> Desa Tanete</li>
-                                <li><strong>Timur:</strong>  </li>
-                                <li><strong>Barat:</strong>  </li>
+                                <li><strong>Timur:</strong> Kelurahan Lautang Benteng</li>
+                                <li><strong>Barat:</strong> Kelurahan Lakessi/Kelurahan Batu Lappa</li>
                             </ul>
                         </div>
                         <div>
@@ -27,7 +27,14 @@ const LandingPagePeta = () => {
                         <div>
                             {loading && <p className="text-gray-500">Loading...</p>}
                             {error && <p className="text-red-600">{error}</p>}
-                            <p><span className="mr-1">👥</span>  <strong>Jumlah Penduduk:</strong> {parseInt(stats.total_man) + parseInt(stats.total_woman)} Jiwa</p>
+                            {stats ? (
+                                <p>
+                                    <span className="mr-1">👥</span>
+                                    <strong>Jumlah Penduduk:</strong> {parseInt(stats.total_man) + parseInt(stats.total_woman)} Jiwa
+                                </p>
+                            ) : (
+                                !loading && !error && <p className="text-gray-500">Data tidak tersedia</p>
+                            )}
                         </div>
                     </div>
 
