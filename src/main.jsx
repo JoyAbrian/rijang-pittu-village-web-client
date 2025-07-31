@@ -19,6 +19,7 @@ import DashboardSOTK from './components/fragments/Dashboard_Page/Dashboard_SOTK_
 import DashboardGallery from './components/fragments/Dashboard_Page/Dashboard_Gallery_Fragment'
 import DashboardNews from './components/fragments/Dashboard_Page/Dashboard_News_Fragment'
 import DashboardEvent from './components/fragments/Dashboard_Page/Dashboard_Event_Fragment'
+import DashboardUMKM from './components/fragments/Dashboard_Page/Dashboard_UMKM_Fragment'
 
 const router = createBrowserRouter([
   {
@@ -88,6 +89,10 @@ const router = createBrowserRouter([
       {
         path: 'acara',
         element: <DashboardEvent />
+      },
+      {
+        path: 'umkm',
+        element: <DashboardUMKM />
       },
     ]
   }
