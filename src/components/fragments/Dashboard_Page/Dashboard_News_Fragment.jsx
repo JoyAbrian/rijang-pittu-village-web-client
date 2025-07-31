@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../elements/Modal/Modal";
 import ConfirmationModal from "../../elements/Modal/ConfirmationModal";
 import { PlusCircle } from "react-bootstrap-icons";
@@ -6,6 +6,10 @@ import DashboardNewsCard from "../../elements/DashboardNewsCard";
 import NewsForm from "../../elements/Modal/NewsForm";
 
 const DashboardNews = () => {
+    useEffect(() => {
+        document.title = "Berita | Dashboard Rijang Pittu"
+    }, [])
+
     const [newsArticles, setNewsArticles] = useState([
         {
             id: '1',

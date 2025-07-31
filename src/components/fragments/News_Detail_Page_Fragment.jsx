@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import NewsSuggestionCard from "../elements/NewsSuggestionCard";
 
 const mainNewsArticle = {
@@ -48,6 +49,10 @@ const newsSuggestions = [
 ];
 
 const NewsDetailPageFragment = () => {
+    useEffect(() => {
+        document.title = mainNewsArticle.title + " | Website Resmi Rijang Pittu"
+    }, [])
+
     return (
         <section className="container mx-auto p-6 mt-20">
             <div className="flex flex-col lg:flex-row gap-8">

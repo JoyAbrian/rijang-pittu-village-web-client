@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import LandingPageHero from "../components/fragments/Landing_Page/landing_page_hero";
 import LandingPageJelajahi from "../components/fragments/Landing_Page/landing_page_jelajahi";
 import LandingPageNews from "../components/fragments/Landing_Page/landing_page_news";
@@ -7,6 +8,10 @@ import Footer from "../components/layouts/Footer";
 import Navbar from "../components/layouts/Navbar";
 
 const LandingPage = () => {
+    useEffect(() => {
+        document.title = "Website Resmi Rijang Pittu"
+    }, [])
+    
     return (
         <>
             <Navbar />

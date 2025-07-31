@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PencilSquare, Trash, PersonPlusFill } from 'react-bootstrap-icons';
 import SOTKFormModal from '../../elements/Modal/SOTKMemberForm';
 import ConfirmationModal from '../../elements/Modal/ConfirmationModal';
 
 const DashboardSOTK = () => {
+    useEffect(() => {
+        document.title = "SOTK | Dashboard Rijang Pittu"
+    }, [])
+
     const [sotkMembers, setSotkMembers] = useState([
         {
             id: 1,

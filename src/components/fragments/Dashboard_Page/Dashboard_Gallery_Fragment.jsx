@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardImageCard from "../../elements/DashboardImageCard";
 import ImageForm from "../../elements/Modal/ImageForm";
 import ConfirmationModal from '../../elements/Modal/ConfirmationModal';
 import { PlusCircle } from "react-bootstrap-icons";
 
 const DashboardGallery = () => {
+    useEffect(() => {
+        document.title = "Galeri | Dashboard Rijang Pittu"
+    }, [])
+
     const [galleryImages, setGalleryImages] = useState([
         { id: 'g1', title: 'Pemandangan Kantor Kelurahan', imageUrl: 'https://placehold.co/600x400/A0A0A0/FFFFFF?text=Kantor+Kelurahan' },
         { id: 'g2', title: 'Kegiatan Sosialisasi Warga', imageUrl: 'https://placehold.co/600x400/A0A0A0/FFFFFF?text=Sosialisasi+Warga' },

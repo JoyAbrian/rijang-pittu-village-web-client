@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const ProfilePageVisiMisi = () => {
-    const [activeSection, setActiveSection] = useState(null); // "visi" | "misi" | null
+    const [activeSection, setActiveSection] = useState(null);
 
     const toggleSection = (section) => {
         setActiveSection((prev) => (prev === section ? null : section));
@@ -17,7 +17,7 @@ const ProfilePageVisiMisi = () => {
                 <div className="flex flex-col lg:flex-row gap-8">
                     <div className="flex-1">
                         <img
-                            src="/images/foto-kelurahan.jpg"
+                            src="/images/kantor-kelurahan.jpg"
                             alt="Visi Misi"
                             className="w-full h-80 object-cover rounded-xl shadow"
                         />

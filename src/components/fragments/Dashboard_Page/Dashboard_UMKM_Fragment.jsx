@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ClockFill, GeoAltFill, Instagram, Map, PlusCircle, TagFill, TelephoneFill } from "react-bootstrap-icons";
 import DashboardUMKMCard from "../../elements/DashboardUMKMCard";
 import UMKMForm from "../../elements/Modal/UMKMForm";
@@ -6,6 +6,10 @@ import ConfirmationModal from "../../elements/Modal/ConfirmationModal";
 import Modal from "../../elements/Modal/Modal";
 
 const DashboardUMKM = () => {
+    useEffect(() => {
+        document.title = "UMKM | Dashboard Rijang Pittu"
+    }, [])
+
     const [umkmList, setUmkmList] = useState([
         {
             id: 'u1',

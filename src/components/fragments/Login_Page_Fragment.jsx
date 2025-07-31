@@ -23,10 +23,10 @@ const LoginPageFragment = () => {
             <div className="flex flex-col lg:flex-row w-full max-w-5xl bg-white rounded-xl shadow-2xl overflow-hidden">
                 <div className="lg:w-1/2 bg-gray-200 flex items-center justify-center p-6 lg:p-10">
                     <img
-                        src="https://placehold.co/600x400/A7D9FF/000000?text=Welcome+to+Rijang+Pittu" // Placeholder image
+                        src="/images/kantor-kelurahan.jpg"
                         alt="Welcome to Rijang Pittu"
                         className="w-full h-auto object-cover rounded-lg shadow-lg max-h-[400px] lg:max-h-full"
-                        onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/600x400/cccccc/000000?text=Image+Not+Found"; }} // Fallback image
+                        onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/600x400/cccccc/000000?text=Image+Not+Found"; }}
                     />
                 </div>
 

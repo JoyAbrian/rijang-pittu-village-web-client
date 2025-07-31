@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EventForm from "../../elements/Modal/EventForm";
 import ConfirmationModal from "../../elements/Modal/ConfirmationModal";
 import { PlusCircle } from "react-bootstrap-icons";
 import DashboardEventCard from "../../elements/DashboardEventCard";
 
 const DashboardEvent = () => {
+    useEffect(() => {
+        document.title = "Acara | Dashboard Rijang Pittu"
+    }, [])
+
     const [events, setEvents] = useState([
         {
             id: 'e1',

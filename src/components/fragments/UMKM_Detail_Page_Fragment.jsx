@@ -1,4 +1,5 @@
 import UMKMSuggestionCard from "../elements/UMKMSuggestionCard";
+import { useEffect } from "react";
 
 const mainUmkm = {
     name: "Warung Makan Sederhana",
@@ -67,6 +68,10 @@ const suggestedUmkm = [
 ];
 
 const UMKMDetailPageFragment = () => {
+    useEffect(() => {
+        document.title = mainUmkm.name + " | Website Resmi Rijang Pittu"
+    }, [])
+
     return (
         <section className="container mx-auto p-6 mt-20">
             <div className="flex flex-col lg:flex-row gap-10">
