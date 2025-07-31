@@ -1,4 +1,9 @@
+import usePeopleStats from "../../../hooks/usePeopleStats";
+
 const LandingPagePeta = () => {
+    const { rawData, loading, error } = usePeopleStats();
+    const stats = rawData.length > 0 ? rawData[0] : null;
+
     return (
         <section className="bg-gray-50 py-20 px-4 font-poppins">
             <div className="max-w-7xl mx-auto">
@@ -20,7 +25,9 @@ const LandingPagePeta = () => {
                             <p><span className="mr-1">📏</span><strong>Luas Kelurahan:</strong> 1.738.600 m²</p>
                         </div>
                         <div>
-                            <p><span className="mr-1">👥</span><strong>Jumlah Penduduk:</strong> 7.292 Jiwa</p>
+                            {loading && <p className="text-gray-500">Loading...</p>}
+                            {error && <p className="text-red-600">{error}</p>}
+                            <p><span className="mr-1">👥</span>  <strong>Jumlah Penduduk:</strong> {parseInt(stats.total_man) + parseInt(stats.total_woman)} Jiwa</p>
                         </div>
                     </div>
 
