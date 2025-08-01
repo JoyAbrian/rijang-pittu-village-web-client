@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 
-const NewsSuggestionCard = ({ slug, image, title, date }) => {
+const NewsSuggestionCard = ({ id, image, title, date }) => {
     return (
-        <Link to={`/berita/${slug}`} className="block">
+        <Link to={`/berita/${id}`} className="block">
             <div className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out cursor-pointer shadow-sm">
                 <img
                     src={image}

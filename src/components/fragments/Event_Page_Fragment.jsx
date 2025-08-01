@@ -1,58 +1,8 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import useEvents from "../../hooks/useEvents";
 import EventCard from "../elements/EventCard";
 
 const EVENTS_PER_PAGE = 12;
-
-const eventList = [
-    {
-        id: 1,
-        name: "Sosialisasi Kesehatan Masyarakat",
-        location: "Kantor Kelurahan Rijang Pittu",
-        eventDate: "2025-07-22",
-        startTime: "08:00",
-        endTime: "10:00",
-    },
-    {
-        id: 2,
-        name: "Pelatihan UMKM Digital",
-        location: "Balai Warga RW 3",
-        eventDate: "2025-07-23",
-        startTime: "13:00",
-        endTime: "15:00",
-    },
-    {
-        id: 3,
-        name: "Jumat Bersih",
-        location: "Lingkungan RT 5",
-        eventDate: "2025-07-23",
-        startTime: "06:00",
-        endTime: "09:00",
-    },
-    {
-        id: 4,
-        name: "Festival Kuliner Lokal",
-        location: "Lapangan Kelurahan",
-        eventDate: "2025-07-30",
-        startTime: "17:00",
-        endTime: "20:00",
-    },
-    {
-        id: 5,
-        name: "Festival Kuliner Lokal",
-        location: "Lapangan Kelurahan",
-        eventDate: "2025-07-30",
-        startTime: "17:00",
-        endTime: "20:00",
-    },
-    {
-        id: 6,
-        name: "Festival Kuliner Lokal",
-        location: "Lapangan Kelurahan",
-        eventDate: "2025-07-30",
-        startTime: "17:00",
-        endTime: "20:00",
-    },
-];
 
 const getEventStatus = (eventDate, startTime, endTime) => {
     const now = new Date();
@@ -68,19 +18,21 @@ const getEventStatus = (eventDate, startTime, endTime) => {
 };
 
 const EventPageFragment = () => {
+    const { events, loading, error } = useEvents();
     const [currentPage, setCurrentPage] = useState(1);
 
-    const sortedEvents = [...eventList].sort((a, b) => {
-        const statusA = getEventStatus(a.eventDate, a.startTime, a.endTime);
-        const statusB = getEventStatus(b.eventDate, b.startTime, b.endTime);
-        return statusA - statusB;
-    });
-    
+    const sortedEvents = useMemo(() => {
+        return [...events].sort((a, b) => {
+            const statusA = getEventStatus(a.event_date, a.start_time, a.end_time);
+            const statusB = getEventStatus(b.event_date, b.start_time, b.end_time);
+            return statusA - statusB;
+        });
+    }, [events]);
+
     const totalPages = Math.ceil(sortedEvents.length / EVENTS_PER_PAGE);
     const startIndex = (currentPage - 1) * EVENTS_PER_PAGE;
     const paginatedEvents = sortedEvents.slice(startIndex, startIndex + EVENTS_PER_PAGE);
 
-    
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
@@ -88,7 +40,6 @@ const EventPageFragment = () => {
         }
     };
 
-    
     return (
         <section className="px-4 pt-32 pb-20 bg-gray-50 font-poppins">
             <div className="max-w-7xl mx-auto">
@@ -97,58 +48,66 @@ const EventPageFragment = () => {
                     Jadwal kegiatan terbaru yang akan berlangsung di Kelurahan Rijang Pittu.
                 </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {paginatedEvents.map((event) => (
-                        <EventCard
-                            key={event.id}
-                            name={event.name}
-                            location={event.location}
-                            eventDate={event.eventDate}
-                            startTime={event.startTime}
-                            endTime={event.endTime}
-                        />
-                    ))}
-                </div>
+                {loading ? (
+                    <p className="text-center text-gray-500">Memuat data kegiatan...</p>
+                ) : error ? (
+                    <p className="text-center text-red-500">{error}</p>
+                ) : (
+                    <>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {paginatedEvents.map((event) => (
+                                <EventCard
+                                    key={event.id}
+                                    name={event.name}
+                                    location={event.location}
+                                    eventDate={event.event_date}
+                                    startTime={event.start_time}
+                                    endTime={event.end_time}
+                                />
+                            ))}
+                        </div>
 
-                <div className="mt-10 flex justify-center items-center space-x-2 text-sm">
-                    <button
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className={`px-4 py-2 rounded-full border font-semibold transition ${
-                            currentPage === 1
-                                ? "text-gray-400 border-gray-300 cursor-not-allowed"
-                                : "text-green-700 border-green-600 hover:bg-green-100"
-                        }`}
-                    >
-                        ← Sebelumnya
-                    </button>
+                        <div className="mt-10 flex justify-center items-center space-x-2 text-sm">
+                            <button
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className={`px-4 py-2 rounded-full border font-semibold transition ${
+                                    currentPage === 1
+                                        ? "text-gray-400 border-gray-300 cursor-not-allowed"
+                                        : "text-green-700 border-green-600 hover:bg-green-100"
+                                }`}
+                            >
+                                ← Sebelumnya
+                            </button>
 
-                    {Array.from({ length: totalPages }, (_, i) => (
-                        <button
-                            key={i + 1}
-                            onClick={() => handlePageChange(i + 1)}
-                            className={`w-9 h-9 rounded-full border text-sm font-medium transition ${
-                                currentPage === i + 1
-                                    ? "bg-green-700 text-white border-green-700"
-                                    : "text-green-700 border-green-600 hover:bg-green-100"
-                            }`}
-                        >
-                            {i + 1}
-                        </button>
-                    ))}
+                            {Array.from({ length: totalPages }, (_, i) => (
+                                <button
+                                    key={i + 1}
+                                    onClick={() => handlePageChange(i + 1)}
+                                    className={`w-9 h-9 rounded-full border text-sm font-medium transition ${
+                                        currentPage === i + 1
+                                            ? "bg-green-700 text-white border-green-700"
+                                            : "text-green-700 border-green-600 hover:bg-green-100"
+                                    }`}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
 
-                    <button
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                        className={`px-4 py-2 rounded-full border font-semibold transition ${
-                            currentPage === totalPages
-                                ? "text-gray-400 border-gray-300 cursor-not-allowed"
-                                : "text-green-700 border-green-600 hover:bg-green-100"
-                        }`}
-                    >
-                        Selanjutnya →
-                    </button>
-                </div>
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className={`px-4 py-2 rounded-full border font-semibold transition ${
+                                    currentPage === totalPages
+                                        ? "text-gray-400 border-gray-300 cursor-not-allowed"
+                                        : "text-green-700 border-green-600 hover:bg-green-100"
+                                }`}
+                            >
+                                Selanjutnya →
+                            </button>
+                        </div>
+                    </>
+                )}
             </div>
         </section>
     );

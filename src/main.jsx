@@ -47,7 +47,7 @@ const router = createBrowserRouter([
     element: <NewsPage />,
   },
   {
-    path: '/berita/:slug',
+    path: '/berita/:id',
     element: <NewsDetailPage />,
   },
   {

@@ -22,7 +22,7 @@ const LandingPagePeta = () => {
                             </ul>
                         </div>
                         <div>
-                            <p><span className="mr-1">📏</span><strong>Luas Kelurahan:</strong> 1.738.600 m²</p>
+                            <p><span className="mr-1">📏</span><strong>Luas Kelurahan:</strong> 3.606.300 m²</p>
                         </div>
                         <div>
                             {loading && <p className="text-gray-500">Loading...</p>}

@@ -1,16 +1,13 @@
 import { Link } from "react-router-dom";
 import GalleryImage from "../../elements/GalleryImage";
-
-const galleryItems = [
-    { src: "/images/galeri1.jpg", title: "Pemandangan Kantor Kelurahan" },
-    { src: "/images/galeri2.jpg", title: "Kegiatan Sosialisasi Warga" },
-    { src: "/images/galeri3.jpg", title: "Peringatan Hari Kemerdekaan" },
-    { src: "/images/galeri4.jpg", title: "Gotong Royong Bersama" },
-    { src: "/images/galeri5.jpg", title: "Seminar Program Kerja KKN 114 UNHAS" },
-    { src: "/images/galeri6.jpg", title: "Jumat Bersih" },
-];
+import useGallery from "../../../hooks/useGallery";
 
 const ProfilePageGallery = () => {
+    const { gallery, loading, error } = useGallery();
+    const limitedItems = [...gallery]
+                            .sort((a, b) => b.id - a.id)
+                            .slice(0, 6);
+
     return (
         <section className="bg-gray-50 py-10 sm:py-16 lg:py-20 px-4 font-poppins">
             <div className="max-w-7xl mx-auto">
@@ -23,11 +20,17 @@ const ProfilePageGallery = () => {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-                    {galleryItems.map((item, index) => (
-                        <GalleryImage key={index} src={item.src} title={item.title} />
-                    ))}
-                </div>
+                {loading ? (
+                    <p className="text-center text-gray-500">Memuat galeri...</p>
+                ) : error ? (
+                    <p className="text-center text-red-500">{error}</p>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                        {limitedItems.map((item, index) => (
+                            <GalleryImage key={item.id || index} src={item.image_url} title={item.title} />
+                        ))}
+                    </div>
+                )}
 
                 <div className="mt-8 sm:mt-12 text-center">
                     <Link
