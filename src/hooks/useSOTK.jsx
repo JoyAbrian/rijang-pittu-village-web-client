@@ -91,6 +91,51 @@ const useSOTK = () => {
         }
     };
 
+    const uploadSOTKImage = async (file, token) => {
+        const formData = new FormData();
+        formData.append("image", file);
+    
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/upload/sotk`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                body: formData,
+            });
+    
+            const data = await res.json();
+    
+            if (!res.ok) throw new Error(data.msg || "Image upload failed");
+    
+            return { success: true, url: data.url };
+        } catch (err) {
+            console.error(err);
+            return { success: false, msg: err.message };
+        }
+    };
+
+    const deleteImage = async (imageUrl, token) => {
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/upload`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ image_url: imageUrl }),
+            });
+    
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.msg || "Image deletion failed");
+    
+            return { success: true, msg: data.msg };
+        } catch (err) {
+            console.error(err);
+            return { success: false, msg: err.message };
+        }
+    };
+    
     useEffect(() => {
         fetchSOTK();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -103,6 +148,8 @@ const useSOTK = () => {
         addSOTK,
         updateSOTK,
         deleteSOTK,
+        uploadSOTKImage,
+        deleteImage,
     };
 };
 

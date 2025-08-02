@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
 
-const generateUniqueId = () => {
-    return Math.random().toString(36).substring(2, 9);
-};
-
 const SOTKFormModal = ({ isOpen, onClose, memberData, onSubmit }) => {
     const [name, setName] = useState('');
     const [role, setRole] = useState('');
@@ -70,24 +66,18 @@ const SOTKFormModal = ({ isOpen, onClose, memberData, onSubmit }) => {
             alert('Nama dan jabatan tidak boleh kosong.');
             return;
         }
-
-        let finalImageUrl = imageUrl;
-        if (imageFile) {
-            finalImageUrl = imagePreview;
-        } else if (!memberData && !imagePreview) {
-            finalImageUrl = 'https://placehold.co/100x100/A0A0A0/FFFFFF?text=No+Image';
-        }
-
-        const newMember = {
-            id: memberData ? memberData.id : generateUniqueId(),
+    
+        const submissionData = {
+            id: memberData?.id || null,
             name,
             role,
-            imageUrl: finalImageUrl,
+            imageFile,
+            imageUrl: imageUrl || '',
         };
-        onSubmit(newMember);
-        onClose();
+    
+        onSubmit(submissionData);
     };
-
+    
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={memberData ? 'Edit SOTK' : 'Tambah SOTK'}>
             <form onSubmit={handleSubmit} className="space-y-4">
