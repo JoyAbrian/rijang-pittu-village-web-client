@@ -1,24 +1,25 @@
 import { useState, useEffect } from "react";
+import { useLoading } from "../contexts/LoadingContext";
 
 const API_URL = import.meta.env.VITE_API_URL + "/gallery";
 
 const useGallery = () => {
     const [gallery, setGallery] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { setIsLoading } = useLoading();
 
     const fetchGallery = async () => {
-        setLoading(true);
+        setIsLoading(true);
         setError(null);
         try {
             const res = await fetch(`${API_URL}/`);
             const data = await res.json();
             setGallery(data);
         } catch (err) {
-            setError("Failed to fetch gallery items");
             console.error(err);
+            setError("Failed to fetch gallery items");
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
@@ -97,11 +98,11 @@ const useGallery = () => {
 
     useEffect(() => {
         fetchGallery();
-    }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [setIsLoading]);
 
     return {
         gallery,
-        loading,
         error,
         addGallery,
         updateGallery,

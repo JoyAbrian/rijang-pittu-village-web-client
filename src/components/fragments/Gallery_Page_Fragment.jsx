@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import useGallery from "../../hooks/useGallery";
 import GalleryImage from "../elements/GalleryImage";
+import LoadingScreen from "../elements/Global/LoadingScreen";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -27,6 +28,7 @@ const GalleryPageFragment = () => {
 
     return (
         <section className="bg-gray-50 pt-32 pb-24 px-4 font-poppins">
+            <LoadingScreen/>
             <div className="max-w-7xl mx-auto">
                 <h2 className="text-3xl sm:text-4xl font-bold text-red-700 mb-2">
                     GALERI

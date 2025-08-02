@@ -1,11 +1,12 @@
 import { useEffect, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import useUMKM from "../../hooks/useUMKM";
 import UMKMSuggestionCard from "../elements/UMKMSuggestionCard";
+import LoadingScreen from "../elements/Global/LoadingScreen";
+import UMKMNotFoundFragment from "./UMKM_Not_Found_Fragment";
 
 const UMKMDetailPageFragment = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
     const { umkm, categories, loading, error } = useUMKM();
 
     const currentUMKM = useMemo(() => umkm.find(u => u.id === parseInt(id)), [umkm, id]);
@@ -28,10 +29,11 @@ const UMKMDetailPageFragment = () => {
 
     if (loading) return <div className="pt-32 text-center">Memuat data UMKM...</div>;
     if (error) return <div className="pt-32 text-center text-red-600">{error}</div>;
-    if (!currentUMKM) return <div className="pt-32 text-center">UMKM tidak ditemukan. <button onClick={() => navigate(-1)} className="underline text-blue-600">Kembali</button></div>;
+    if (!currentUMKM) return <UMKMNotFoundFragment />;
 
     return (
         <section className="container mx-auto p-6 mt-20">
+            <LoadingScreen />
             <div className="flex flex-col lg:flex-row gap-10">
                 <div className="lg:w-2/3 bg-white p-10 rounded-xl shadow-2xl transform hover:scale-[1.005] transition-transform duration-300 ease-in-out">
                     <div className="flex flex-col md:flex-row items-start md:items-center mb-8">

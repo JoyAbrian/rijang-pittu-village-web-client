@@ -20,86 +20,47 @@ import DashboardGallery from './components/fragments/Dashboard_Page/Dashboard_Ga
 import DashboardNews from './components/fragments/Dashboard_Page/Dashboard_News_Fragment'
 import DashboardEvent from './components/fragments/Dashboard_Page/Dashboard_Event_Fragment'
 import DashboardUMKM from './components/fragments/Dashboard_Page/Dashboard_UMKM_Fragment'
+import { LoadingProvider } from './contexts/LoadingContext'
+import RootLayout from './contexts/RootLayout'
+import NotFoundPage from './pages/not_found_page'
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <LandingPage />,
-  },
-  {
-    path: '/profil',
-    element: <ProfilePage />,
-  },
-  {
-    path: '/profil/sotk',
-    element: <SOTKPage />,
-  },
-  {
-    path: '/infografis',
-    element: <InfographicPage />,
-  },
-  {
-    path: '/galeri',
-    element: <GalleryPage />,
-  },
-  {
-    path: '/berita',
-    element: <NewsPage />,
-  },
-  {
-    path: '/berita/:id',
-    element: <NewsDetailPage />,
-  },
-  {
-    path: '/acara',
-    element: <EventPage />,
-  },
-  {
-    path: '/umkm',
-    element: <UMKMPage />,
-  },
-  {
-    path: '/umkm/:id',
-    element: <UMKMDetailPage />,
-  },
-  {
-    path: '/login',
-    element: <LoginPage />,
-  },
-  {
-    path: '/dashboard',
-    element: <DashboardPage />,
+    path: "/",
+    element: <RootLayout />,
     children: [
+      { index: true, element: <LandingPage /> },
+      { path: "profil", element: <ProfilePage /> },
+      { path: "profil/sotk", element: <SOTKPage /> },
+      { path: "infografis", element: <InfographicPage /> },
+      { path: "galeri", element: <GalleryPage /> },
+      { path: "berita", element: <NewsPage /> },
+      { path: "berita/:id", element: <NewsDetailPage /> },
+      { path: "acara", element: <EventPage /> },
+      { path: "umkm", element: <UMKMPage /> },
+      { path: "umkm/:id", element: <UMKMDetailPage /> },
+      { path: "login", element: <LoginPage /> },
       {
-        index: true,
-        element: <DashboardHome />
+        path: "dashboard",
+        element: <DashboardPage />,
+        children: [
+          { index: true, element: <DashboardHome /> },
+          { path: "sotk", element: <DashboardSOTK /> },
+          { path: "galeri", element: <DashboardGallery /> },
+          { path: "berita", element: <DashboardNews /> },
+          { path: "acara", element: <DashboardEvent /> },
+          { path: "umkm", element: <DashboardUMKM /> },
+        ],
       },
-      {
-        path: 'sotk',
-        element: <DashboardSOTK />
-      },
-      {
-        path: 'galeri',
-        element: <DashboardGallery />
-      },
-      {
-        path: 'berita',
-        element: <DashboardNews />
-      },
-      {
-        path: 'acara',
-        element: <DashboardEvent />
-      },
-      {
-        path: 'umkm',
-        element: <DashboardUMKM />
-      },
-    ]
-  }
-])
+      { path: "*", element: <NotFoundPage /> },
+    ],
+  },
+]);
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <LoadingProvider>
+      <RouterProvider router={router} />
+    </LoadingProvider>
   </StrictMode>
 )

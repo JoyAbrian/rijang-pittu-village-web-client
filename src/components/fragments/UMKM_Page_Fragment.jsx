@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import useUMKM from "../../hooks/useUMKM";
 import UMKMCard from "../elements/UMKMCard";
+import LoadingScreen from "../elements/Global/LoadingScreen";
 
 const itemsPerPage = 9;
 
@@ -35,6 +36,7 @@ const UMKMPageFragment = () => {
 
     return (
         <section className="bg-gray-50 pt-32 pb-24 px-4 font-poppins">
+            <LoadingScreen/>
             <div className="max-w-7xl mx-auto">
                 <h2 className="text-3xl font-bold text-red-700 mb-4">UMKM Kelurahan</h2>
                 <p className="text-gray-700 mb-8">

@@ -2,10 +2,12 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import useNewsDetail from "../../hooks/useNewsDetail";
 import NewsSuggestionCard from "../elements/NewsSuggestionCard";
+import LoadingScreen from "../elements/Global/LoadingScreen";
+import NewsNotFoundFragment from "./News_Not_Found_Fragment";
 
 const NewsDetailPageFragment = () => {
     const { id } = useParams();
-    const { news, suggestions, loading, error } = useNewsDetail(id);
+    const { news, suggestions, loading, error, notFound } = useNewsDetail(id);
 
     useEffect(() => {
         if (news) {
@@ -14,11 +16,13 @@ const NewsDetailPageFragment = () => {
     }, [news]);
 
     if (loading) return <p className="mt-20 text-center">Loading...</p>;
+    if (notFound) return <NewsNotFoundFragment />;
     if (error) return <p className="mt-20 text-center text-red-500">{error}</p>;
-    if (!news) return <p className="mt-20 text-center">Berita tidak ditemukan.</p>;
+    if (!news) return null;
 
     return (
         <section className="container mx-auto p-6 mt-20">
+            <LoadingScreen />
             <div className="flex flex-col lg:flex-row gap-8">
                 <div className="lg:w-2/3 bg-white p-8 rounded-lg shadow-lg">
                     <h2 className="text-4xl font-extrabold text-gray-900 mb-4 leading-tight">
@@ -67,7 +71,7 @@ const NewsDetailPageFragment = () => {
                                 key={item.id}
                                 id={item.id}
                                 title={item.title}
-                                date= {new Date(news.date).toLocaleDateString("id-ID", {
+                                date={new Date(item.date).toLocaleDateString("id-ID", {
                                     weekday: "long",
                                     year: "numeric",
                                     month: "long",

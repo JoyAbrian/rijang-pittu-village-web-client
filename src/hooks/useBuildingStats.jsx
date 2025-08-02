@@ -1,28 +1,30 @@
 import { useEffect, useState } from "react";
+import { useLoading } from "../contexts/LoadingContext";
 
 const API_URL = import.meta.env.VITE_API_URL + "/building-statistics";
 
 const useBuildingStats = () => {
     const [rawData, setRawData] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { setIsLoading } = useLoading();
 
     const fetchStats = async () => {
-        setLoading(true);
+        setIsLoading(true);
         setError(null);
         try {
             const res = await fetch(`${API_URL}/`);
             const data = await res.json();
             setRawData(data);
         } catch (err) {
-            setError("Failed to fetch building statistics");
             console.error(err);
+            setError("Failed to fetch building statistics");
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
     const updateStats = async ({ id, total_school, total_hospital, total_religious_places, total_office }, token) => {
+        setIsLoading(true);
         try {
             const res = await fetch(`${API_URL}/${id}`, {
                 method: "PUT",
@@ -49,14 +51,22 @@ const useBuildingStats = () => {
         } catch (err) {
             console.error(err);
             return { success: false, msg: err.message };
+        } finally {
+            setIsLoading(false);
         }
     };
 
     useEffect(() => {
         fetchStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return { rawData, loading, error, updateStats };
+    return {
+        rawData,
+        error,
+        updateStats,
+        refetch: fetchStats,
+    };
 };
 
 export default useBuildingStats;

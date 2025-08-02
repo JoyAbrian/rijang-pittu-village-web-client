@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import NewsCard from "../elements/NewsCard";
 import useNews from "../../hooks/useNews";
+import LoadingScreen from "../elements/Global/LoadingScreen";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -30,6 +31,7 @@ const NewsPageFragment = () => {
 
     return (
         <section className="bg-gray-50 pt-32 pb-24 px-4 font-poppins">
+            <LoadingScreen/>
             <div className="container mx-auto px-4">
                 <h1 className="text-4xl font-bold text-red-700 mb-2 text-start">Berita Kelurahan</h1>
                 <p className="text-lg text-neutral-600 mb-10">Berita terbaru mengenai Kelurahan Rijang Pittu</p>

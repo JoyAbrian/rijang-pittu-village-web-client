@@ -1,28 +1,30 @@
 import { useState, useEffect } from "react";
+import { useLoading } from "../contexts/LoadingContext";
 
 const API_URL = import.meta.env.VITE_API_URL + "/events";
 
 const useEvents = () => {
     const [events, setEvents] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { setIsLoading } = useLoading();
 
     const fetchEvents = async () => {
-        setLoading(true);
+        setIsLoading(true);
         setError(null);
         try {
             const res = await fetch(`${API_URL}/`);
             const data = await res.json();
             setEvents(data);
         } catch (err) {
-            setError("Failed to fetch events");
             console.error(err);
+            setError("Failed to fetch events");
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
     const addEvent = async (eventData, token) => {
+        setIsLoading(true);
         try {
             const res = await fetch(`${API_URL}/`, {
                 method: "POST",
@@ -44,10 +46,13 @@ const useEvents = () => {
         } catch (err) {
             console.error(err);
             return { success: false, msg: err.message };
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const updateEvent = async (id, eventData, token) => {
+        setIsLoading(true);
         try {
             const res = await fetch(`${API_URL}/${id}`, {
                 method: "PUT",
@@ -69,10 +74,13 @@ const useEvents = () => {
         } catch (err) {
             console.error(err);
             return { success: false, msg: err.message };
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const deleteEvent = async (id, token) => {
+        setIsLoading(true);
         try {
             const res = await fetch(`${API_URL}/${id}`, {
                 method: "DELETE",
@@ -92,16 +100,18 @@ const useEvents = () => {
         } catch (err) {
             console.error(err);
             return { success: false, msg: err.message };
+        } finally {
+            setIsLoading(false);
         }
     };
 
     useEffect(() => {
         fetchEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return {
         events,
-        loading,
         error,
         addEvent,
         updateEvent,

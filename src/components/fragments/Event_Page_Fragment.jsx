@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import useEvents from "../../hooks/useEvents";
 import EventCard from "../elements/EventCard";
+import LoadingScreen from "../elements/Global/LoadingScreen";
 
 const EVENTS_PER_PAGE = 12;
 
@@ -42,6 +43,7 @@ const EventPageFragment = () => {
 
     return (
         <section className="px-4 pt-32 pb-20 bg-gray-50 font-poppins">
+            <LoadingScreen/>
             <div className="max-w-7xl mx-auto">
                 <h2 className="text-3xl font-bold text-red-700 mb-4">Agenda Kegiatan</h2>
                 <p className="text-gray-700 mb-8">

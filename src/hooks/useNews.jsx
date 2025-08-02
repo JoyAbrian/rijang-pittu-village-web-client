@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
+import { useLoading } from "../contexts/LoadingContext";
 
 const API_URL = import.meta.env.VITE_API_URL + "/news";
 
 const useNews = () => {
     const [newsList, setNewsList] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { setIsLoading } = useLoading();
 
     const fetchNews = async () => {
-        setLoading(true);
+        setIsLoading(true);
         setError(null);
         try {
             const res = await fetch(`${API_URL}/`);
@@ -18,11 +19,12 @@ const useNews = () => {
             console.error(err);
             setError("Failed to fetch news");
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
     const addNews = async (newsData, token) => {
+        setIsLoading(true);
         try {
             const res = await fetch(`${API_URL}/`, {
                 method: "POST",
@@ -44,10 +46,13 @@ const useNews = () => {
         } catch (err) {
             console.error(err);
             return { success: false, msg: err.message };
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const updateNews = async (id, updatedData, token) => {
+        setIsLoading(true);
         try {
             const res = await fetch(`${API_URL}/${id}`, {
                 method: "PUT",
@@ -69,10 +74,13 @@ const useNews = () => {
         } catch (err) {
             console.error(err);
             return { success: false, msg: err.message };
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const deleteNews = async (id, token) => {
+        setIsLoading(true);
         try {
             const res = await fetch(`${API_URL}/${id}`, {
                 method: "DELETE",
@@ -92,16 +100,18 @@ const useNews = () => {
         } catch (err) {
             console.error(err);
             return { success: false, msg: err.message };
+        } finally {
+            setIsLoading(false);
         }
     };
 
     useEffect(() => {
         fetchNews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return {
         newsList,
-        loading,
         error,
         fetchNews,
         addNews,
