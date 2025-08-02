@@ -1,40 +1,13 @@
 import { Link } from "react-router-dom";
+import { useLoading } from "../../../contexts/LoadingContext";
+import useSOTK from "../../../hooks/useSOTK";
 import SOTKCard from "../../elements/SOTKCard";
 
-const pegawaiList = [
-    {
-        nama: "Hairuddin",
-        jabatan: "Lurah",
-        foto: "/images/pegawai1.jpg",
-    },
-    {
-        nama: "Andi Sari",
-        jabatan: "Sekretaris",
-        foto: "/images/pegawai2.jpg",
-    },
-    {
-        nama: "Sudirman",
-        jabatan: "Bendahara",
-        foto: "/images/pegawai3.jpg",
-    },
-    {
-        nama: "Dewi Lestari",
-        jabatan: "Kepala Seksi Pemerintahan",
-        foto: "/images/pegawai4.jpg",
-    },
-    {
-        nama: "Budi Santoso",
-        jabatan: "Kepala Seksi Kesejahteraan Sosial",
-        foto: "/images/pegawai5.jpg",
-    },
-    {
-        nama: "Siti Aminah",
-        jabatan: "Kepala Seksi Pemberdayaan Masyarakat",
-        foto: "/images/pegawai6.jpg",
-    },
-];
-
 const ProfilePageSOTK = () => {
+    const { sotkList, error } = useSOTK();
+    const { isLoading } = useLoading();
+    const limitedList = sotkList.slice(0, 5);
+
     return (
         <section className="bg-gray-50 py-10 sm:py-16 lg:py-20 px-4 font-poppins">
             <div className="max-w-7xl mx-auto">
@@ -47,16 +20,22 @@ const ProfilePageSOTK = () => {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 sm:gap-8">
-                    {pegawaiList.slice(0, 4).map((pegawai, index) => (
-                        <SOTKCard
-                            key={index}
-                            photo={pegawai.foto}
-                            name={pegawai.nama}
-                            position={pegawai.jabatan}
-                        />
-                    ))}
-                </div>
+                {isLoading ? (
+                    <p className="text-center text-gray-500 text-lg">Memuat data pegawai...</p>
+                ) : error ? (
+                    <p className="text-center text-red-500 text-lg">{error}</p>
+                ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 sm:gap-8">
+                        {limitedList.map((pegawai) => (
+                            <SOTKCard
+                                key={pegawai.id}
+                                photo={pegawai.photo_url}
+                                name={pegawai.name}
+                                position={pegawai.role}
+                            />
+                        ))}
+                    </div>
+                )}
 
                 <div className="mt-8 sm:mt-12 text-center">
                     <Link
