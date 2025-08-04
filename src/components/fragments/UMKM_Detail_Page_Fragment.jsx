@@ -31,6 +31,12 @@ const UMKMDetailPageFragment = () => {
     if (error) return <div className="pt-32 text-center text-red-600">{error}</div>;
     if (!currentUMKM) return <UMKMNotFoundFragment />;
 
+    const formatContentForDisplay = (text) => {
+        if (!text) return { __html: '' };
+        const htmlContent = text.split('\n\n').map(paragraph => `<p class="mb-4">${paragraph.replace(/\n/g, '<br/>')}</p>`).join('');
+        return { __html: htmlContent };
+    };
+
     return (
         <section className="container mx-auto p-6 mt-20">
             <LoadingScreen />
@@ -60,7 +66,7 @@ const UMKMDetailPageFragment = () => {
 
                     <div
                         className="prose prose-lg max-w-none text-gray-800 leading-relaxed border-t pt-8 mt-8 border-gray-200"
-                        dangerouslySetInnerHTML={{ __html: currentUMKM.description || "<p>Tidak ada deskripsi tersedia.</p>" }}
+                        dangerouslySetInnerHTML={formatContentForDisplay(currentUMKM.description)}
                     ></div>
 
                     <div className="mt-8 pt-6 border-t border-gray-200">

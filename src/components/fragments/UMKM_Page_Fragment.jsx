@@ -20,8 +20,8 @@ const UMKMPageFragment = () => {
                 openTime: item.open_time?.slice(0, 5),
                 closeTime: item.close_time?.slice(0, 5),
                 umkmType: {
-                    icon: category?.icon || "/icons/default.svg",
-                    name: category?.name || "Tidak diketahui"
+                    icon: category?.type_icon || "/icons/default.svg",
+                    name: category?.type_name || "Tidak diketahui"
                 }
             };
         });

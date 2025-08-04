@@ -4,59 +4,25 @@ import DashboardUMKMCard from "../../elements/DashboardUMKMCard";
 import UMKMForm from "../../elements/Modal/UMKMForm";
 import ConfirmationModal from "../../elements/Modal/ConfirmationModal";
 import Modal from "../../elements/Modal/Modal";
+import useUMKM from "../../../hooks/useUMKM";
 
 const DashboardUMKM = () => {
     useEffect(() => {
-        document.title = "UMKM | Dashboard Rijang Pittu"
-    }, [])
+        document.title = "UMKM | Dashboard Rijang Pittu";
+    }, []);
 
-    const [umkmList, setUmkmList] = useState([
-        {
-            id: 'u1',
-            name: "Warung Makan Sederhana",
-            category: "Kuliner",
-            image: "https://placehold.co/800x400/FF5722/FFFFFF?text=Warung+Makan+Sederhana",
-            description: `Warung Makan Sederhana adalah destinasi kuliner yang menyajikan berbagai hidangan khas Bugis dengan cita rasa otentik. Berlokasi strategis di pusat Kelurahan Rijang Pittu, warung ini menjadi favorit warga lokal maupun pengunjung yang mencari pengalaman makan yang hangat dan ramah di kantong.\n\nMenu andalan kami meliputi Coto Makassar, Konro Bakar, Pallubasa, dan aneka kue tradisional yang dibuat segar setiap hari. Kami berkomitmen menggunakan bahan-bahan berkualitas tinggi dari petani lokal untuk memastikan setiap hidangan tidak hanya lezat tetapi juga mendukung ekonomi komunitas.\n\nSuasana warung yang nyaman dan pelayanan yang cepat menjadikan Warung Makan Sederhana tempat yang ideal untuk makan siang bersama keluarga, makan malam santai, atau sekadar menikmati kopi dan kue di sore hari. Kami juga menerima pesanan katering untuk berbagai acara.\n\nDatang dan rasakan sendiri kelezatan masakan rumahan di Warung Makan Sederhana!`,
-            priceRangeStart: "10.000",
-            priceRangeEnd: "25.000",
-            openingHoursStart: "07:00",
-            openingHoursEnd: "20:00",
-            address: "Jl. Raya Rijang Pittu No. 123, Sidenreng Rappang",
-            contact: "0812-3456-7890",
-            instagramUsername: "warungmakansederhana",
-            googleMaps: "https://maps.google.com/?q=Warung+Makan+Sederhana+Rijang+Pittu",
-        },
-        {
-            id: 'u2',
-            name: "Kedai Kopi Hijau",
-            category: "Kuliner",
-            image: "https://placehold.co/800x400/8BC34A/FFFFFF?text=Kedai+Kopi+Hijau",
-            description: `Kedai Kopi Hijau adalah tempat nongkrong santai dengan berbagai varian kopi lokal dan internasional. Kami menawarkan suasana yang nyaman untuk bekerja, bertemu teman, atau sekadar menikmati secangkir kopi berkualitas.\n\nSelain kopi, kami juga menyajikan aneka camilan dan makanan ringan yang cocok untuk menemani waktu santai Anda. Biji kopi kami berasal dari petani lokal pilihan, menjamin kesegaran dan cita rasa terbaik.`,
-            priceRangeStart: "8.000",
-            priceRangeEnd: "30.000",
-            openingHoursStart: "09:00",
-            openingHoursEnd: "23:00",
-            address: "Jl. Kopi Sejati No. 5, Sidenreng Rappang",
-            contact: "0856-7890-1234",
-            instagramUsername: "kedaikopihijau",
-            googleMaps: "https://maps.google.com/?q=Kedai+Kopi+Hijau+Sidenreng+Rappang",
-        },
-        {
-            id: 'u3',
-            name: "Toko Oleh-oleh Makassar",
-            category: "Oleh-oleh",
-            image: "https://placehold.co/800x400/FFC107/FFFFFF?text=Toko+Oleh-oleh+Makassar",
-            description: `Toko Oleh-oleh Makassar menyediakan berbagai macam produk khas Makassar dan Sulawesi Selatan. Mulai dari kue tradisional, kerajinan tangan, hingga kain tenun, semua tersedia di sini.\n\nKami adalah pilihan tepat untuk mencari buah tangan berkualitas tinggi untuk keluarga dan teman. Produk-produk kami dipilih dengan cermat untuk memastikan kualitas dan keasliannya.`,
-            priceRangeStart: "15.000",
-            priceRangeEnd: "75.000",
-            openingHoursStart: "08:00",
-            openingHoursEnd: "17:00",
-            address: "Jl. Kenangan Indah No. 7, Sidenreng Rappang",
-            contact: "0878-1234-5678",
-            instagramUsername: "tokooleholehmakassar",
-            googleMaps: "https://maps.google.com/?q=Toko+Oleh-oleh+Makassar+Sidenreng+Rappang",
-        },
-    ]);
+    const token = localStorage.getItem('token');
+
+    const {
+        umkm,
+        categories,
+        error,
+        addUMKM,
+        updateUMKM,
+        deleteUMKM,
+        uploadUMKMImage,
+        deleteImage,
+    } = useUMKM();
 
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
@@ -64,68 +30,54 @@ const DashboardUMKM = () => {
     const [currentUmkmItem, setCurrentUmkmItem] = useState(null);
     const [viewingUmkmItem, setViewingUmkmItem] = useState(null);
 
-    const [formData, setFormData] = useState({
-        name: '',
-        category: '',
-        image: '',
-        description: '',
-        priceRangeStart: '',
-        priceRangeEnd: '',
-        openingHoursStart: '',
-        openingHoursEnd: '',
-        address: '',
-        contact: '',
-        instagramUsername: '',
-        googleMaps: '',
-    });
+    const [umkmToDeleteId, setUmkmToDeleteId] = useState(null);
+    const [umkmToDeleteImageUrl, setUmkmToDeleteImageUrl] = useState(null);
 
     const handleAddUmkm = () => {
         setCurrentUmkmItem(null);
-        setFormData({
-            name: '',
-            category: '',
-            image: '',
-            description: '',
-            priceRangeStart: '',
-            priceRangeEnd: '',
-            openingHoursStart: '',
-            openingHoursEnd: '',
-            address: '',
-            contact: '',
-            instagramUsername: '',
-            googleMaps: '',
-        });
         setIsFormModalOpen(true);
     };
 
     const handleEditUmkm = (umkm) => {
         setCurrentUmkmItem(umkm);
-        setFormData({
-            name: umkm.name,
-            category: umkm.category,
-            image: umkm.image,
-            description: umkm.description,
-            priceRangeStart: umkm.priceRangeStart,
-            priceRangeEnd: umkm.priceRangeEnd,
-            openingHoursStart: umkm.openingHoursStart,
-            openingHoursEnd: umkm.openingHoursEnd,
-            address: umkm.address,
-            contact: umkm.contact,
-            instagramUsername: umkm.instagramUsername,
-            googleMaps: umkm.googleMaps,
-        });
         setIsFormModalOpen(true);
     };
 
     const handleDeleteUmkm = (umkm) => {
-        setCurrentUmkmItem(umkm);
+        setUmkmToDeleteId(umkm.id);
+        setUmkmToDeleteImageUrl(umkm.image_url);
         setIsConfirmationModalOpen(true);
     };
 
-    const handleConfirmDelete = () => {
-        setUmkmList(umkmList.filter(umkm => umkm.id !== currentUmkmItem.id));
+    const handleConfirmDelete = async () => {
+        if (!umkmToDeleteId || !token) {
+            console.error("Missing UMKM ID or token for deletion.");
+            alert("Gagal menghapus: ID UMKM atau token tidak tersedia.");
+            setIsConfirmationModalOpen(false);
+            return;
+        }
+
+        const dbDeleteResult = await deleteUMKM(umkmToDeleteId, token);
+
+        if (dbDeleteResult.success) {
+            console.log(dbDeleteResult.msg);
+            if (umkmToDeleteImageUrl) {
+                const fileDeleteResult = await deleteImage(umkmToDeleteImageUrl, token);
+                if (fileDeleteResult.success) {
+                    console.log("Image file also deleted:", fileDeleteResult.msg);
+                } else {
+                    console.warn("Failed to delete UMKM image file:", fileDeleteResult.msg);
+                    alert("UMKM berhasil dihapus dari daftar, tetapi gagal menghapus file gambar dari server.");
+                }
+            }
+        } else {
+            console.error("Failed to delete UMKM item:", dbDeleteResult.msg);
+            alert(dbDeleteResult.msg);
+        }
+
         setIsConfirmationModalOpen(false);
-        setCurrentUmkmItem(null);
+        setUmkmToDeleteId(null);
+        setUmkmToDeleteImageUrl(null);
     };
 
     const handleViewUmkm = (umkm) => {
@@ -133,39 +85,62 @@ const DashboardUMKM = () => {
         setIsViewModalOpen(true);
     };
 
-    const handleSaveUmkm = (e) => {
-        e.preventDefault();
-        if (currentUmkmItem) {
-            setUmkmList(umkmList.map(umkm =>
-                umkm.id === currentUmkmItem.id ? { ...umkm, ...formData } : umkm
-            ));
-        } else {
-            const newUmkm = {
-                id: crypto.randomUUID(),
-                ...formData,
-            };
-            setUmkmList([...umkmList, newUmkm]);
+    const handleSaveUmkm = async (formDataFromForm) => {
+        if (!token) {
+            alert("Autentikasi diperlukan untuk menambahkan/mengedit UMKM.");
+            return;
         }
-        setIsFormModalOpen(false);
-        setFormData({
-            name: '',
-            category: '',
-            image: '',
-            description: '',
-            priceRangeStart: '',
-            priceRangeEnd: '',
-            openingHoursStart: '',
-            openingHoursEnd: '',
-            address: '',
-            contact: '',
-            instagramUsername: '',
-            googleMaps: '',
-        });
-    };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        let finalImageUrl = formDataFromForm.imageUrl;
+
+        if (formDataFromForm.imageFile) {
+            const uploadResult = await uploadUMKMImage(formDataFromForm.imageFile, token);
+            if (!uploadResult.success) {
+                alert("Gagal mengunggah gambar: " + uploadResult.msg);
+                return;
+            }
+            finalImageUrl = uploadResult.url;
+
+            if (currentUmkmItem && currentUmkmItem.image_url && currentUmkmItem.image_url !== finalImageUrl) {
+                const oldImageDeleteResult = await deleteImage(currentUmkmItem.image_url, token);
+                if (!oldImageDeleteResult.success) {
+                    console.warn("Failed to delete old UMKM image file:", oldImageDeleteResult.msg);
+                }
+            }
+        } else if (!formDataFromForm.imageUrl && !currentUmkmItem) {
+            finalImageUrl = "https://placehold.co/800x400/CCCCCC/333333?text=No+Image";
+        }
+
+        const categoryObject = categories.find(cat => cat.type_name === formDataFromForm.category);
+        const categoryId = categoryObject ? categoryObject.id : null;
+
+        const payload = {
+            name: formDataFromForm.name,
+            category_id: categoryId,
+            image_url: finalImageUrl,
+            description: formDataFromForm.description,
+            price_min: formDataFromForm.priceRangeStart,
+            price_max: formDataFromForm.priceRangeEnd,
+            open_time: formDataFromForm.openingHoursStart,
+            close_time: formDataFromForm.openingHoursEnd,
+            address: formDataFromForm.address,
+            contact: formDataFromForm.contact,
+            instagram: formDataFromForm.instagramUsername,
+            google_maps: formDataFromForm.googleMaps,
+        };
+
+        let result;
+        if (currentUmkmItem) {
+            result = await updateUMKM(currentUmkmItem.id, payload, token);
+        } else {
+            result = await addUMKM(payload, token);
+        }
+
+        if (!result.success) {
+            alert(result.msg);
+        }
+
+        setIsFormModalOpen(false);
     };
 
     const formatContentForDisplay = (text) => {
@@ -173,6 +148,10 @@ const DashboardUMKM = () => {
         const htmlContent = text.split('\n\n').map(paragraph => `<p class="mb-4">${paragraph.replace(/\n/g, '<br/>')}</p>`).join('');
         return { __html: htmlContent };
     };
+
+    if (error) {
+        return <div className="min-h-screen bg-gray-100 p-6 flex items-center justify-center text-red-600 text-lg">Error: {error}</div>;
+    }
 
     return (
         <div className="flex h-screen bg-gray-100 font-inter">
@@ -189,15 +168,41 @@ const DashboardUMKM = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {umkmList.map((umkm) => (
-                            <DashboardUMKMCard
-                                key={umkm.id}
-                                umkm={umkm}
-                                handleEditUmkm={handleEditUmkm}
-                                handleDeleteUmkm={handleDeleteUmkm}
-                                handleViewUmkm={handleViewUmkm}
-                            />
-                        ))}
+                        {umkm.length === 0 ? (
+                            <p className="text-gray-600 col-span-full text-center">Belum ada data UMKM.</p>
+                        ) : (
+                            umkm.map((item) => (
+                                <DashboardUMKMCard
+                                    key={item.id}
+                                    umkm={{
+                                        id: item.id,
+                                        name: item.name,
+                                        category: categories.find(cat => cat.id === item.category_id)?.type_name || 'Unknown',
+                                        image: item.image_url,
+                                        description: item.description,
+                                        priceRangeStart: item.price_min,
+                                        priceRangeEnd: item.price_max,
+                                        openingHoursStart: item.open_time,
+                                        openingHoursEnd: item.close_time,
+                                        address: item.address,
+                                        contact: item.contact,
+                                        instagramUsername: item.instagram,
+                                        googleMaps: item.google_maps,
+                                        category_id: item.category_id,
+                                        image_url: item.image_url,
+                                        price_min: item.price_min,
+                                        price_max: item.price_max,
+                                        open_time: item.open_time,
+                                        close_time: item.close_time,
+                                        instagram: item.instagram,
+                                        Maps: item.google_maps,
+                                    }}
+                                    handleEditUmkm={() => handleEditUmkm(item)}
+                                    handleDeleteUmkm={() => handleDeleteUmkm(item)}
+                                    handleViewUmkm={() => handleViewUmkm(item)}
+                                />
+                            ))
+                        )}
                     </div>
                 </main>
             </div>
@@ -206,9 +211,9 @@ const DashboardUMKM = () => {
                 isOpen={isFormModalOpen}
                 onClose={() => setIsFormModalOpen(false)}
                 title={currentUmkmItem ? "Edit UMKM" : "Tambah UMKM Baru"}
-                formData={formData}
-                handleChange={handleChange}
-                handleSaveUmkm={handleSaveUmkm}
+                umkmData={currentUmkmItem} 
+                onSubmit={handleSaveUmkm}
+                categories={categories}
             />
 
             <ConfirmationModal
@@ -226,19 +231,19 @@ const DashboardUMKM = () => {
                 {viewingUmkmItem && (
                     <div className="text-gray-800">
                         <img
-                            src={viewingUmkmItem.image}
+                            src={viewingUmkmItem.image_url}
                             alt={viewingUmkmItem.name}
                             className="w-full h-64 object-cover rounded-lg mb-4"
                             onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/800x400/CCCCCC/333333?text=Gambar+Tidak+Ditemukan"; }}
                         />
                         <p className="text-sm text-gray-600 mb-2 flex items-center">
-                            <TagFill className="mr-2 text-orange-500" /> Kategori: {viewingUmkmItem.category}
+                            <TagFill className="mr-2 text-orange-500" /> Kategori: {categories.find(cat => cat.id === viewingUmkmItem.category_id)?.name || 'Unknown'}
                         </p>
                         <p className="text-sm text-gray-600 mb-2 flex items-center">
-                            <TagFill className="mr-2 text-green-500" /> Harga: Rp{viewingUmkmItem.priceRangeStart} - Rp{viewingUmkmItem.priceRangeEnd}
+                            <TagFill className="mr-2 text-green-500" /> Harga: Rp{viewingUmkmItem.price_min} - Rp{viewingUmkmItem.price_max}
                         </p>
                         <p className="text-sm text-gray-600 mb-2 flex items-center">
-                            <ClockFill className="mr-2 text-purple-500" /> Jam Buka: {viewingUmkmItem.openingHoursStart} - {viewingUmkmItem.openingHoursEnd}
+                            <ClockFill className="mr-2 text-purple-500" /> Jam Buka: {viewingUmkmItem.open_time} - {viewingUmkmItem.close_time}
                         </p>
                         <p className="text-sm text-gray-600 mb-2 flex items-center">
                             <GeoAltFill className="mr-2 text-blue-500" /> Alamat: {viewingUmkmItem.address}
@@ -246,14 +251,14 @@ const DashboardUMKM = () => {
                         <p className="text-sm text-gray-600 mb-2 flex items-center">
                             <TelephoneFill className="mr-2 text-teal-500" /> Kontak: {viewingUmkmItem.contact}
                         </p>
-                        {viewingUmkmItem.instagramUsername && (
+                        {viewingUmkmItem.instagram && (
                             <p className="text-sm text-gray-600 mb-2 flex items-center">
-                                <Instagram className="mr-2 text-pink-500" /> Instagram: <a href={`https://www.instagram.com/${viewingUmkmItem.instagramUsername}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">@{viewingUmkmItem.instagramUsername}</a>
+                                <Instagram className="mr-2 text-pink-500" /> Instagram: <a href={`https://www.instagram.com/${viewingUmkmItem.instagram}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">@{viewingUmkmItem.instagram}</a>
                             </p>
                         )}
-                        {viewingUmkmItem.googleMaps && (
+                        {viewingUmkmItem.Maps && (
                             <p className="text-sm text-gray-600 mb-4 flex items-center">
-                                <Map className="mr-2 text-red-500" /> Google Maps: <a href={viewingUmkmItem.googleMaps} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Lihat di Peta</a>
+                                <Map className="mr-2 text-red-500" /> Google Maps: <a href={viewingUmkmItem.Maps} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Lihat di Peta</a>
                             </p>
                         )}
                         <h4 className="text-md font-semibold text-gray-900 mb-2">Deskripsi:</h4>

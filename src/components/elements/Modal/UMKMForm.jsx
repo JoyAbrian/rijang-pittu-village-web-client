@@ -1,28 +1,66 @@
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
 
-const UMKMForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveUmkm }) => {
+const UMKMForm = ({ isOpen, onClose, title, umkmData, onSubmit, categories }) => {
+    const [name, setName] = useState('');
+    const [category, setCategory] = useState('');
+    const [description, setDescription] = useState('');
+    const [priceRangeStart, setPriceRangeStart] = useState('');
+    const [priceRangeEnd, setPriceRangeEnd] = useState('');
+    const [openingHoursStart, setOpeningHoursStart] = useState('');
+    const [openingHoursEnd, setOpeningHoursEnd] = useState('');
+    const [address, setAddress] = useState('');
+    const [contact, setContact] = useState('');
+    const [instagramUsername, setInstagramUsername] = useState('');
+    const [googleMaps, setGoogleMaps] = useState('');
+
+    const [existingImageUrl, setExistingImageUrl] = useState('');
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState('');
     const [imageError, setImageError] = useState('');
+
     const [googleMapsError, setGoogleMapsError] = useState('');
-
-    const categories = ["Kuliner", "Kerajinan", "Fashion", "Jasa", "Pertanian", "Lain-lain"]; // Dummy categories
-    const googleMapsRegex = /^(https?:\/\/(www\.)?google\.com\/maps\/|https?:\/\/maps\.google\.com\/)\S*$/;
-
 
     useEffect(() => {
         if (isOpen) {
-            if (formData.image) {
-                setImagePreview(formData.image);
+            if (umkmData) {
+                setName(umkmData.name || '');
+                const categoryName = categories.find(cat => cat.id === umkmData.category_id)?.name || '';
+                setCategory(categoryName);
+                setDescription(umkmData.description || '');
+                setPriceRangeStart(umkmData.price_min || '');
+                setPriceRangeEnd(umkmData.price_max || '');
+                setOpeningHoursStart(umkmData.open_time || '');
+                setOpeningHoursEnd(umkmData.close_time || '');
+                setAddress(umkmData.address || '');
+                setContact(umkmData.contact || '');
+                setInstagramUsername(umkmData.instagram || '');
+                setGoogleMaps(umkmData.Maps || '');
+
+                setExistingImageUrl(umkmData.image_url || ''); 
+                setImagePreview(umkmData.image_url || '');
+                setImageFile(null);
             } else {
+                setName('');
+                setCategory('');
+                setDescription('');
+                setPriceRangeStart('');
+                setPriceRangeEnd('');
+                setOpeningHoursStart('');
+                setOpeningHoursEnd('');
+                setAddress('');
+                setContact('');
+                setInstagramUsername('');
+                setGoogleMaps('');
+
+                setExistingImageUrl('');
+                setImageFile(null);
                 setImagePreview('');
             }
             setImageError('');
-            setImageFile(null);
             setGoogleMapsError('');
         }
-    }, [isOpen, formData.image]);
+    }, [isOpen, umkmData, categories]); 
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -32,47 +70,62 @@ const UMKMForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveUm
                 setImageError('Tipe file tidak disupport. Harap unggah file JPG, PNG, atau JPEG.');
                 setImageFile(null);
                 setImagePreview('');
-                handleChange({ target: { name: 'image', value: '' } });
                 return;
             }
 
-            const maxSize = 5 * 1024 * 1024; // 5 MB
+            const maxSize = 5 * 1024 * 1024;
             if (file.size > maxSize) {
                 setImageError('Ukuran Gambar Melebihi 5MB.');
                 setImageFile(null);
                 setImagePreview('');
-                handleChange({ target: { name: 'image', value: '' } });
                 return;
             }
 
             setImageError('');
             setImageFile(file);
+            setExistingImageUrl('');
 
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);
-                handleChange({ target: { name: 'image', value: reader.result } });
             };
             reader.readAsDataURL(file);
         } else {
             setImageFile(null);
-            setImagePreview(formData.image || '');
+            setImagePreview(umkmData?.image_url || '');
+            setExistingImageUrl(umkmData?.image_url || '');
             setImageError('');
-            handleChange({ target: { name: 'image', value: formData.image || '' } });
         }
     };
 
-    const handleFormSubmit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        // Validasi Google Maps URL sebelum menyimpan
-        if (formData.googleMaps && !googleMapsRegex.test(formData.googleMaps)) {
-            setGoogleMapsError('Format URL Google Maps tidak valid. Contoh: https://maps.google.com/?q=Lokasi');
+
+        if (!name.trim() || !category.trim() || !description.trim() ||
+            !priceRangeStart.trim() || !priceRangeEnd.trim() ||
+            !openingHoursStart.trim() || !openingHoursEnd.trim() ||
+            !address.trim() || !contact.trim()) {
+            alert('Semua bidang wajib diisi (kecuali Instagram dan Google Maps).');
             return;
         }
-        setGoogleMapsError('');
-        handleSaveUmkm(e);
+        
+        onSubmit({
+            id: umkmData?.id || null,
+            name,
+            category,
+            description,
+            priceRangeStart,
+            priceRangeEnd,
+            openingHoursStart,
+            openingHoursEnd,
+            address,
+            contact,
+            instagramUsername,
+            googleMaps,
+            imageFile,
+            imageUrl: imageFile ? '' : existingImageUrl,
+        });
     };
-
 
     return (
         <Modal
@@ -80,15 +133,15 @@ const UMKMForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveUm
             onClose={onClose}
             title={title}
         >
-            <form onSubmit={handleFormSubmit}>
+            <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">Nama UMKM</label>
                     <input
                         type="text"
                         id="name"
                         name="name"
-                        value={formData.name}
-                        onChange={handleChange}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                         className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />
@@ -98,14 +151,14 @@ const UMKMForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveUm
                     <select
                         id="category"
                         name="category"
-                        value={formData.category}
-                        onChange={handleChange}
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
                         className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     >
                         <option value="">Pilih Kategori</option>
                         {categories.map((cat) => (
-                            <option key={cat} value={cat}>{cat}</option>
+                            <option key={cat.id} value={cat.type_name}>{cat.type_name}</option>
                         ))}
                     </select>
                 </div>
@@ -115,7 +168,7 @@ const UMKMForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveUm
                         type="file"
                         id="image"
                         name="image"
-                        accept="image/jpeg, image/png, image/jpg"
+                        accept="image/jpeg, image:png, image:jpg"
                         onChange={handleImageChange}
                         className="block w-full text-sm text-gray-700
                             file:mr-4 file:py-2 file:px-4
@@ -125,11 +178,11 @@ const UMKMForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveUm
                             hover:file:bg-blue-100"
                     />
                     {imageError && <p className="text-red-500 text-xs mt-1">{imageError}</p>}
-                    {imagePreview && (
+                    {(imagePreview || (umkmData && umkmData.image_url && !imageFile)) && ( // Use umkmData.image_url here
                         <div className="mt-4">
                             <p className="text-sm text-gray-600 mb-2">Pratinjau Gambar:</p>
                             <img
-                                src={imagePreview}
+                                src={imagePreview || umkmData.image_url} // Use umkmData.image_url as fallback
                                 alt="Pratinjau"
                                 className="w-full h-48 object-cover rounded-lg border border-gray-300"
                                 onError={(e) => {
@@ -152,8 +205,8 @@ const UMKMForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveUm
                             type="number"
                             id="priceRangeStart"
                             name="priceRangeStart"
-                            value={formData.priceRangeStart}
-                            onChange={handleChange}
+                            value={priceRangeStart}
+                            onChange={(e) => setPriceRangeStart(e.target.value)}
                             className="shadow appearance-none border rounded-lg w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
                             placeholder="Harga Awal (Rp)"
                             required
@@ -162,8 +215,8 @@ const UMKMForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveUm
                             type="number"
                             id="priceRangeEnd"
                             name="priceRangeEnd"
-                            value={formData.priceRangeEnd}
-                            onChange={handleChange}
+                            value={priceRangeEnd}
+                            onChange={(e) => setPriceRangeEnd(e.target.value)}
                             className="shadow appearance-none border rounded-lg w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
                             placeholder="Harga Akhir (Rp)"
                             required
@@ -177,8 +230,8 @@ const UMKMForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveUm
                             type="time"
                             id="openingHoursStart"
                             name="openingHoursStart"
-                            value={formData.openingHoursStart}
-                            onChange={handleChange}
+                            value={openingHoursStart}
+                            onChange={(e) => setOpeningHoursStart(e.target.value)}
                             className="shadow appearance-none border rounded-lg w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
                             required
                         />
@@ -186,8 +239,8 @@ const UMKMForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveUm
                             type="time"
                             id="openingHoursEnd"
                             name="openingHoursEnd"
-                            value={formData.openingHoursEnd}
-                            onChange={handleChange}
+                            value={openingHoursEnd}
+                            onChange={(e) => setOpeningHoursEnd(e.target.value)}
                             className="shadow appearance-none border rounded-lg w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
                             required
                         />
@@ -198,10 +251,11 @@ const UMKMForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveUm
                     <textarea
                         id="address"
                         name="address"
-                        value={formData.address}
-                        onChange={handleChange}
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
                         rows="2"
                         className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Tulis alamat lengkap UMKM di sini."
                         required
                     ></textarea>
                 </div>
@@ -211,8 +265,8 @@ const UMKMForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveUm
                         type="tel"
                         id="contact"
                         name="contact"
-                        value={formData.contact}
-                        onChange={handleChange}
+                        value={contact}
+                        onChange={(e) => setContact(e.target.value)}
                         className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Contoh: 0812-3456-7890"
                         required
@@ -226,8 +280,8 @@ const UMKMForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveUm
                             type="text"
                             id="instagramUsername"
                             name="instagramUsername"
-                            value={formData.instagramUsername}
-                            onChange={handleChange}
+                            value={instagramUsername}
+                            onChange={(e) => setInstagramUsername(e.target.value)}
                             className="flex-1 py-2 px-3 text-gray-700 leading-tight focus:outline-none"
                             placeholder="nama_pengguna"
                         />
@@ -239,10 +293,10 @@ const UMKMForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveUm
                         type="url"
                         id="googleMaps"
                         name="googleMaps"
-                        value={formData.googleMaps}
-                        onChange={handleChange}
+                        value={googleMaps}
+                        onChange={(e) => setGoogleMaps(e.target.value)}
                         className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Contoh: https://maps.google.com/?q=Lokasi"
+                        placeholder="Contoh: https://maps.app.goo.gl/abcdefg"
                     />
                     {googleMapsError && <p className="text-red-500 text-xs mt-1">{googleMapsError}</p>}
                 </div>
@@ -251,8 +305,8 @@ const UMKMForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveUm
                     <textarea
                         id="description"
                         name="description"
-                        value={formData.description}
-                        onChange={handleChange}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                         rows="6"
                         className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Tulis deskripsi UMKM di sini. Gunakan baris kosong untuk paragraf baru."
