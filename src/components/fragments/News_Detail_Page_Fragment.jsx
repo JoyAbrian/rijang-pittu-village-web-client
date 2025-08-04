@@ -20,6 +20,12 @@ const NewsDetailPageFragment = () => {
     if (error) return <p className="mt-20 text-center text-red-500">{error}</p>;
     if (!news) return null;
 
+    const formatContentForDisplay = (text) => {
+        if (!text) return { __html: '' };
+        const htmlContent = text.split('\n\n').map(paragraph => `<p class="mb-4">${paragraph.replace(/\n/g, '<br/>')}</p>`).join('');
+        return { __html: htmlContent };
+    };
+
     return (
         <section className="container mx-auto p-6 mt-20">
             <LoadingScreen />
@@ -57,7 +63,7 @@ const NewsDetailPageFragment = () => {
                     />
                     <div
                         className="prose prose-lg max-w-none text-gray-800 leading-relaxed"
-                        dangerouslySetInnerHTML={{ __html: news.content }}
+                        dangerouslySetInnerHTML={formatContentForDisplay(news.content)}
                     ></div>
                 </div>
 

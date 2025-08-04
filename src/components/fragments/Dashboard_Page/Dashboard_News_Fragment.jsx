@@ -26,14 +26,14 @@ const DashboardNews = () => {
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-    const [currentNewsItem, setCurrentNewsItem] = useState(null); // For edit/delete
-    const [viewingNewsItem, setViewingNewsItem] = useState(null); // For viewing full news
+    const [currentNewsItem, setCurrentNewsItem] = useState(null);
+    const [viewingNewsItem, setViewingNewsItem] = useState(null); 
 
     const [newsToDeleteId, setNewsToDeleteId] = useState(null);
-    const [newsToDeleteImageUrl, setNewsToDeleteImageUrl] = useState(null); // To store image URL for deletion
-
+    const [newsToDeleteImageUrl, setNewsToDeleteImageUrl] = useState(null); 
+    
     const handleAddNews = () => {
-        setCurrentNewsItem(null); // Clear item for new addition
+        setCurrentNewsItem(null);
         setIsFormModalOpen(true);
     };
 
@@ -89,10 +89,9 @@ const DashboardNews = () => {
             alert("Autentikasi diperlukan untuk menambahkan/mengedit berita.");
             return;
         }
-        let finalImageUrl = imageUrl; // Use existing URL by default
+        let finalImageUrl = imageUrl;
 
         if (imageFile) {
-            // Upload new image if a file is selected
             const uploadResult = await uploadNewsImage(imageFile, token);
             if (!uploadResult.success) {
                 alert("Gagal mengunggah gambar: " + uploadResult.msg);
@@ -166,11 +165,11 @@ const DashboardNews = () => {
                                     news={{
                                         id: news.id,
                                         title: news.title,
-                                        date: news.published_date ? new Date(news.published_date).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '', // Format date for display
-                                        image: news.image_url, // Use image_url from backend
+                                        date: news.date ? new Date(news.date).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '',
+                                        image: news.image_url,
                                         content: news.content,
-                                        image_url: news.image_url, // Keep original for internal use if needed
-                                        published_date: news.published_date, // Keep original for internal use if needed
+                                        image_url: news.image_url,
+                                        published_date: news.date,
                                     }}
                                     handleEditNews={() => handleEditNews(news)}
                                     handleDeleteNews={() => handleDeleteNews(news)}
@@ -182,12 +181,11 @@ const DashboardNews = () => {
                 </main>
             </div>
 
-            {/* NewsForm will now receive currentNewsItem directly */}
             <NewsForm
                 isOpen={isFormModalOpen}
                 onClose={() => setIsFormModalOpen(false)}
                 title={currentNewsItem ? "Edit Berita" : "Tambah Berita Baru"}
-                newsData={currentNewsItem} // Pass the entire currentNewsItem
+                newsData={currentNewsItem}
                 onSubmit={handleSaveNews}
             />
 
@@ -206,7 +204,7 @@ const DashboardNews = () => {
                 {viewingNewsItem && (
                     <div className="text-gray-800">
                         <img
-                            src={viewingNewsItem.image_url} // Use image_url from backend for display
+                            src={viewingNewsItem.image_url}
                             alt={viewingNewsItem.title}
                             className="w-full h-64 object-cover rounded-lg mb-4"
                             onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/800x400/CCCCCC/333333?text=Image+Not+Found"; }}

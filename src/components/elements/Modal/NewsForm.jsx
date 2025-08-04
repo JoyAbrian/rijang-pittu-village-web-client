@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
 
-const NewsForm = ({ isOpen, onClose, title, newsData, onSubmit }) => { // Changed formData to newsData, handleChange to onSubmit
+const NewsForm = ({ isOpen, onClose, title, newsData, onSubmit }) => {
     const [newsTitle, setNewsTitle] = useState('');
     const [newsDate, setNewsDate] = useState('');
     const [newsContent, setNewsContent] = useState('');
-    const [existingImageUrl, setExistingImageUrl] = useState(''); // To hold the URL from the database for existing news
+    const [existingImageUrl, setExistingImageUrl] = useState('');
     const [imageFile, setImageFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(''); // For live preview of selected file
+    const [imagePreview, setImagePreview] = useState('');
     const [imageError, setImageError] = useState('');
 
     useEffect(() => {
@@ -16,9 +16,9 @@ const NewsForm = ({ isOpen, onClose, title, newsData, onSubmit }) => { // Change
                 setNewsTitle(newsData.title || '');
                 setNewsDate(newsData.published_date ? new Date(newsData.published_date).toISOString().split('T')[0] : '');
                 setNewsContent(newsData.content || '');
-                setExistingImageUrl(newsData.image_url || ''); // Set existing URL
-                setImagePreview(newsData.image_url || ''); // Set preview to existing URL
-                setImageFile(null); // Clear any previously selected file
+                setExistingImageUrl(newsData.image_url || '');
+                setImagePreview(newsData.image_url || '');
+                setImageFile(null);
                 setImageError('');
             } else {
                 setNewsTitle('');
@@ -43,7 +43,7 @@ const NewsForm = ({ isOpen, onClose, title, newsData, onSubmit }) => { // Change
                 return;
             }
 
-            const maxSize = 5 * 1024 * 1024; // 5 MB
+            const maxSize = 5 * 1024 * 1024;
             if (file.size > maxSize) {
                 setImageError('Ukuran Gambar Melebihi 5MB.');
                 setImageFile(null);
@@ -53,7 +53,7 @@ const NewsForm = ({ isOpen, onClose, title, newsData, onSubmit }) => { // Change
 
             setImageError('');
             setImageFile(file);
-            setExistingImageUrl(''); // Clear existing URL if a new file is selected
+            setExistingImageUrl('');
 
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -62,7 +62,6 @@ const NewsForm = ({ isOpen, onClose, title, newsData, onSubmit }) => { // Change
             reader.readAsDataURL(file);
         } else {
             setImageFile(null);
-            // If file input is cleared, revert preview and existingImageUrl to newsData's original
             setImagePreview(newsData?.image_url || '');
             setExistingImageUrl(newsData?.image_url || '');
             setImageError('');
@@ -76,16 +75,14 @@ const NewsForm = ({ isOpen, onClose, title, newsData, onSubmit }) => { // Change
             return;
         }
 
-        // Pass all relevant data to the parent's onSubmit
         onSubmit({
-            id: newsData?.id || null, // Pass ID if editing
+            id: newsData?.id || null,
             title: newsTitle,
-            date: newsDate, // 'date' here will be 'published_date' in backend payload
+            date: newsDate,
             content: newsContent,
-            imageFile, // The actual file if a new one is selected
-            imageUrl: imageFile ? '' : existingImageUrl, // Pass existing URL if no new file is selected
+            imageFile,
+            imageUrl: imageFile ? '' : existingImageUrl,
         });
-        // onClose() is called by the parent component after submission is handled
     };
 
     return (
