@@ -1,22 +1,36 @@
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
 
-const NewsForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveNews }) => {
+const NewsForm = ({ isOpen, onClose, title, newsData, onSubmit }) => { // Changed formData to newsData, handleChange to onSubmit
+    const [newsTitle, setNewsTitle] = useState('');
+    const [newsDate, setNewsDate] = useState('');
+    const [newsContent, setNewsContent] = useState('');
+    const [existingImageUrl, setExistingImageUrl] = useState(''); // To hold the URL from the database for existing news
     const [imageFile, setImageFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState('');
+    const [imagePreview, setImagePreview] = useState(''); // For live preview of selected file
     const [imageError, setImageError] = useState('');
 
     useEffect(() => {
         if (isOpen) {
-            if (formData.image) {
-                setImagePreview(formData.image);
+            if (newsData) {
+                setNewsTitle(newsData.title || '');
+                setNewsDate(newsData.published_date ? new Date(newsData.published_date).toISOString().split('T')[0] : '');
+                setNewsContent(newsData.content || '');
+                setExistingImageUrl(newsData.image_url || ''); // Set existing URL
+                setImagePreview(newsData.image_url || ''); // Set preview to existing URL
+                setImageFile(null); // Clear any previously selected file
+                setImageError('');
             } else {
+                setNewsTitle('');
+                setNewsDate('');
+                setNewsContent('');
+                setExistingImageUrl('');
+                setImageFile(null);
                 setImagePreview('');
+                setImageError('');
             }
-            setImageError('');
-            setImageFile(null);
         }
-    }, [isOpen, formData.image]);
+    }, [isOpen, newsData]);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -26,7 +40,6 @@ const NewsForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveNe
                 setImageError('Tipe file tidak disupport. Harap unggah file JPG, PNG, atau JPEG.');
                 setImageFile(null);
                 setImagePreview('');
-                handleChange({ target: { name: 'image', value: '' } });
                 return;
             }
 
@@ -35,27 +48,45 @@ const NewsForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveNe
                 setImageError('Ukuran Gambar Melebihi 5MB.');
                 setImageFile(null);
                 setImagePreview('');
-                handleChange({ target: { name: 'image', value: '' } });
                 return;
             }
 
             setImageError('');
             setImageFile(file);
+            setExistingImageUrl(''); // Clear existing URL if a new file is selected
 
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);
-                handleChange({ target: { name: 'image', value: reader.result } });
             };
             reader.readAsDataURL(file);
         } else {
             setImageFile(null);
-            setImagePreview(formData.image || '');
+            // If file input is cleared, revert preview and existingImageUrl to newsData's original
+            setImagePreview(newsData?.image_url || '');
+            setExistingImageUrl(newsData?.image_url || '');
             setImageError('');
-            handleChange({ target: { name: 'image', value: formData.image || '' } });
         }
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!newsTitle.trim() || !newsDate.trim() || !newsContent.trim()) {
+            alert('Judul, tanggal, dan konten tidak boleh kosong.');
+            return;
+        }
+
+        // Pass all relevant data to the parent's onSubmit
+        onSubmit({
+            id: newsData?.id || null, // Pass ID if editing
+            title: newsTitle,
+            date: newsDate, // 'date' here will be 'published_date' in backend payload
+            content: newsContent,
+            imageFile, // The actual file if a new one is selected
+            imageUrl: imageFile ? '' : existingImageUrl, // Pass existing URL if no new file is selected
+        });
+        // onClose() is called by the parent component after submission is handled
+    };
 
     return (
         <Modal
@@ -63,36 +94,36 @@ const NewsForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveNe
             onClose={onClose}
             title={title}
         >
-            <form onSubmit={handleSaveNews}>
+            <form onSubmit={handleSubmit}>
                 <div className="mb-4">
-                    <label htmlFor="title" className="block text-gray-700 text-sm font-bold mb-2">Judul Berita</label>
+                    <label htmlFor="newsTitle" className="block text-gray-700 text-sm font-bold mb-2">Judul Berita</label>
                     <input
                         type="text"
-                        id="title"
+                        id="newsTitle"
                         name="title"
-                        value={formData.title}
-                        onChange={handleChange}
+                        value={newsTitle}
+                        onChange={(e) => setNewsTitle(e.target.value)}
                         className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="date" className="block text-gray-700 text-sm font-bold mb-2">Tanggal</label>
+                    <label htmlFor="newsDate" className="block text-gray-700 text-sm font-bold mb-2">Tanggal</label>
                     <input
                         type="date"
-                        id="date"
+                        id="newsDate"
                         name="date"
-                        value={formData.date}
-                        onChange={handleChange}
+                        value={newsDate}
+                        onChange={(e) => setNewsDate(e.target.value)}
                         className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="image" className="block text-gray-700 text-sm font-bold mb-2">Unggah Gambar</label>
+                    <label htmlFor="newsImage" className="block text-gray-700 text-sm font-bold mb-2">Unggah Gambar</label>
                     <input
                         type="file"
-                        id="image"
+                        id="newsImage"
                         name="image"
                         accept="image/jpeg, image/png, image/jpg"
                         onChange={handleImageChange}
@@ -104,11 +135,11 @@ const NewsForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveNe
                             hover:file:bg-blue-100"
                     />
                     {imageError && <p className="text-red-500 text-xs mt-1">{imageError}</p>}
-                    {imagePreview && (
+                    {(imagePreview || (newsData && newsData.image_url && !imageFile)) && (
                         <div className="mt-4">
                             <p className="text-sm text-gray-600 mb-2">Pratinjau Gambar:</p>
                             <img
-                                src={imagePreview}
+                                src={imagePreview || newsData.image_url}
                                 alt="Pratinjau"
                                 className="w-full h-48 object-cover rounded-lg border border-gray-300"
                                 onError={(e) => {
@@ -125,12 +156,12 @@ const NewsForm = ({ isOpen, onClose, title, formData, handleChange, handleSaveNe
                     </p>
                 </div>
                 <div className="mb-6">
-                    <label htmlFor="content" className="block text-gray-700 text-sm font-bold mb-2">Konten Berita</label>
+                    <label htmlFor="newsContent" className="block text-gray-700 text-sm font-bold mb-2">Konten Berita</label>
                     <textarea
-                        id="content"
+                        id="newsContent"
                         name="content"
-                        value={formData.content}
-                        onChange={handleChange}
+                        value={newsContent}
+                        onChange={(e) => setNewsContent(e.target.value)}
                         rows="8"
                         className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Tulis konten berita di sini. Gunakan baris kosong untuk paragraf baru."

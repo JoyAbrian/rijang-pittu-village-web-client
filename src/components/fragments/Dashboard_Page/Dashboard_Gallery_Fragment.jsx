@@ -3,25 +3,30 @@ import DashboardImageCard from "../../elements/DashboardImageCard";
 import ImageForm from "../../elements/Modal/ImageForm";
 import ConfirmationModal from '../../elements/Modal/ConfirmationModal';
 import { PlusCircle } from "react-bootstrap-icons";
+import useGallery from "../../../hooks/useGallery"; 
 
 const DashboardGallery = () => {
     useEffect(() => {
-        document.title = "Galeri | Dashboard Rijang Pittu"
-    }, [])
+        document.title = "Galeri | Dashboard Rijang Pittu";
+    }, []);
 
-    const [galleryImages, setGalleryImages] = useState([
-        { id: 'g1', title: 'Pemandangan Kantor Kelurahan', imageUrl: 'https://placehold.co/600x400/A0A0A0/FFFFFF?text=Kantor+Kelurahan' },
-        { id: 'g2', title: 'Kegiatan Sosialisasi Warga', imageUrl: 'https://placehold.co/600x400/A0A0A0/FFFFFF?text=Sosialisasi+Warga' },
-        { id: 'g3', title: 'Peringatan Hari Kemerdekaan', imageUrl: 'https://placehold.co/600x400/A0A0A0/FFFFFF?text=Hari+Kemerdekaan' },
-        { id: 'g4', title: 'Gotong Royong Bersama', imageUrl: 'https://placehold.co/600x400/A0A0A0/FFFFFF?text=Gotong+Royong' },
-        { id: 'g5', title: 'Seminar Program Kerja KKN UNHAS', imageUrl: 'https://placehold.co/600x400/A0A0A0/FFFFFF?text=KKN+UNHAS' },
-        { id: 'g6', title: 'Jumat Bersih', imageUrl: 'https://placehold.co/600x400/A0A0A0/FFFFFF?text=Jumat+Bersih' },
-    ]);
+    const token = localStorage.getItem('token');
+
+    const {
+        gallery,
+        error,
+        addGallery,
+        updateGallery,
+        deleteGallery,
+        uploadGalleryImage, 
+        deleteImage
+    } = useGallery();
 
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState(null);
     const [imageToDeleteId, setImageToDeleteId] = useState(null);
+    const [imageToDeleteUrl, setImageToDeleteUrl] = useState(null);
 
     const handleAddImage = () => {
         setCurrentImage(null);
@@ -29,31 +34,97 @@ const DashboardGallery = () => {
     };
 
     const handleEdit = (id) => {
-        const imageToEdit = galleryImages.find((image) => image.id === id);
-        setCurrentImage(imageToEdit);
+        const imageToEdit = gallery.find((image) => image.id === id);
+        setCurrentImage(imageToEdit ? { ...imageToEdit, imageUrl: imageToEdit.image_url } : null);
         setIsFormModalOpen(true);
     };
 
-    const handleDeleteClick = (id) => {
+    const handleDeleteClick = (id, imageUrl) => {
         setImageToDeleteId(id);
+        setImageToDeleteUrl(imageUrl);
         setIsConfirmModalOpen(true);
     };
 
-    const confirmDelete = () => {
-        setGalleryImages(galleryImages.filter((image) => image.id !== imageToDeleteId));
+    const confirmDelete = async () => {
+        if (!imageToDeleteId || !token) {
+            console.error("Missing ID or token for deletion.");
+            alert("Gagal menghapus: ID gambar atau token tidak tersedia.");
+            setIsConfirmModalOpen(false);
+            return;
+        }
+
+        const dbDeleteResult = await deleteGallery(imageToDeleteId, token);
+
+        if (dbDeleteResult.success) {
+            console.log(dbDeleteResult.msg);
+            if (imageToDeleteUrl) {
+                const fileDeleteResult = await deleteImage(imageToDeleteUrl, token);
+                if (fileDeleteResult.success) {
+                    console.log("Image file also deleted:", fileDeleteResult.msg);
+                } else {
+                    console.warn("Failed to delete image file:", fileDeleteResult.msg);
+                    alert("Gambar berhasil dihapus dari galeri, tetapi gagal menghapus file gambar dari server.");
+                }
+            }
+        } else {
+            console.error("Failed to delete gallery item:", dbDeleteResult.msg);
+            alert(dbDeleteResult.msg);
+        }
+
         setIsConfirmModalOpen(false);
         setImageToDeleteId(null);
+        setImageToDeleteUrl(null);
     };
 
-    const handleFormSubmit = (newImage) => {
-        if (currentImage) {
-            setGalleryImages(galleryImages.map((image) =>
-                image.id === newImage.id ? newImage : image
-            ));
-        } else {
-            setGalleryImages([...galleryImages, newImage]);
+    const handleFormSubmit = async ({ title, imageFile, imageUrl }) => {
+        if (!token) {
+            alert("Autentikasi diperlukan untuk menambahkan/mengedit galeri.");
+            return;
         }
+
+        let finalImageUrl = imageUrl;
+
+        if (imageFile) {
+            const uploadResult = await uploadGalleryImage(imageFile, token);
+            if (!uploadResult.success) {
+                alert("Gagal mengunggah gambar: " + uploadResult.msg);
+                return;
+            }
+            finalImageUrl = uploadResult.url;
+
+            if (currentImage && currentImage.image_url && currentImage.image_url !== finalImageUrl) {
+                const oldImageDeleteResult = await deleteImage(currentImage.image_url, token);
+                if (!oldImageDeleteResult.success) {
+                    console.warn("Failed to delete old image file:", oldImageDeleteResult.msg);
+                }
+            }
+        } else if (!imageUrl && !currentImage) {
+            finalImageUrl = "https://placehold.co/400x300/A0A0A0/FFFFFF?text=No+Image";
+        }
+
+
+        const payload = {
+            title,
+            image_url: finalImageUrl,
+        };
+
+        let result;
+        if (currentImage) {
+            result = await updateGallery(currentImage.id, payload, token);
+        } else {
+            result = await addGallery(payload, token);
+        }
+
+        if (!result.success) {
+            alert(result.msg);
+        }
+
+        setIsFormModalOpen(false);
     };
+
+    if (error) {
+        return <div className="min-h-screen bg-gray-100 p-6 flex items-center justify-center text-red-600 text-lg">Error: {error}</div>;
+    }
 
     return (
         <div className="min-h-screen bg-gray-100 p-6 font-inter">
@@ -68,14 +139,18 @@ const DashboardGallery = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {galleryImages.map((image) => (
-                    <DashboardImageCard
-                        key={image.id}
-                        image={image}
-                        onEdit={handleEdit}
-                        onDelete={handleDeleteClick}
-                    />
-                ))}
+                {gallery.length === 0 ? (
+                    <p className="text-gray-600 col-span-full text-center">Belum ada gambar di galeri.</p>
+                ) : (
+                    gallery.map((image) => (
+                        <DashboardImageCard
+                            key={image.id}
+                            image={{ id: image.id, title: image.title, imageUrl: image.image_url }}
+                            onEdit={() => handleEdit(image.id)}
+                            onDelete={() => handleDeleteClick(image.id, image.image_url)}
+                        />
+                    ))
+                )}
             </div>
 
             <ImageForm

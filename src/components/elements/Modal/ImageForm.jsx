@@ -1,30 +1,28 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "./Modal";
-
-const generateUniqueId = () => {
-    return Math.random().toString(36).substring(2, 9);
-};
 
 const ImageForm = ({ isOpen, onClose, imageData, onSubmit }) => {
     const [title, setTitle] = useState('');
     const [imageUrl, setImageUrl] = useState('');
-    const [imageFile, setImageFile] = useState(null);
+    const [imageFile, setImageFile] = useState(null); 
     const [imagePreview, setImagePreview] = useState('');
     const [imageError, setImageError] = useState('');
 
     useEffect(() => {
-        if (imageData) {
-            setTitle(imageData.title);
-            setImageUrl(imageData.imageUrl);
-            setImagePreview(imageData.imageUrl);
-            setImageFile(null);
-        } else {
-            setTitle('');
-            setImageUrl('');
-            setImageFile(null);
-            setImagePreview('');
-            setImageError('');
+        if (isOpen) {
+            if (imageData) {
+                setTitle(imageData.title);
+                setImageUrl(imageData.imageUrl || '');
+                setImagePreview(imageData.imageUrl || '');
+                setImageFile(null);
+                setImageError('');
+            } else {
+                setTitle('');
+                setImageUrl('');
+                setImageFile(null);
+                setImagePreview('');
+                setImageError('');
+            }
         }
     }, [imageData, isOpen]);
 
@@ -49,40 +47,34 @@ const ImageForm = ({ isOpen, onClose, imageData, onSubmit }) => {
 
             setImageError('');
             setImageFile(file);
+            setImageUrl('');
 
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImagePreview(reader.result);
+                setImagePreview(reader.result); 
             };
             reader.readAsDataURL(file);
         } else {
             setImageFile(null);
             setImagePreview(imageData ? imageData.imageUrl : '');
+            setImageUrl(imageData ? imageData.imageUrl : '');
             setImageError('');
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!title.trim()) {
             alert('Judul tidak boleh kosong.');
             return;
         }
 
-        let finalImageUrl = imageUrl;
-        if (imageFile) {
-            finalImageUrl = imagePreview;
-        } else if (!imageData && !imagePreview) {
-            finalImageUrl = 'https://placehold.co/400x300/A0A0A0/FFFFFF?text=No+Image';
-        }
-
-        const newImage = {
-            id: imageData ? imageData.id : generateUniqueId(),
+        onSubmit({
+            id: imageData?.id,
             title,
-            imageUrl: finalImageUrl,
-        };
-        onSubmit(newImage);
-        onClose();
+            imageFile,
+            imageUrl: imageFile ? '' : imageUrl,
+        });
     };
 
     return (
@@ -109,9 +101,9 @@ const ImageForm = ({ isOpen, onClose, imageData, onSubmit }) => {
                         className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
                     />
                     {imageError && <p className="text-red-500 text-xs mt-1">{imageError}</p>}
-                    {imagePreview && (
+                    {(imagePreview || (imageData && imageData.imageUrl && !imageFile)) && (
                         <div className="mt-4 flex justify-center">
-                            <img src={imagePreview} alt="Pratinjau Gambar" className="w-48 h-32 object-cover rounded-lg border-2 border-indigo-300" />
+                            <img src={imagePreview || imageData.imageUrl} alt="Pratinjau Gambar" className="w-48 h-32 object-cover rounded-lg border-2 border-indigo-300" />
                         </div>
                     )}
                 </div>
