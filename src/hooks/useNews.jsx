@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLoading } from "../contexts/LoadingContext";
-
-const API_URL = import.meta.env.VITE_API_URL + "/news";
+import { supabase } from "../contexts/supabase";
 
 const useNews = () => {
     const [newsList, setNewsList] = useState([]);
@@ -12,9 +11,12 @@ const useNews = () => {
         setIsLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${API_URL}/`);
-            if (!res.ok) throw new Error("Failed to fetch news");
-            const data = await res.json();
+            const { data, error } = await supabase
+                .from("news")
+                .select("*")
+                .order("date", { ascending: false });
+
+            if (error) throw error;
             setNewsList(data);
         } catch (err) {
             console.error("Error fetching news:", err);
@@ -24,118 +26,94 @@ const useNews = () => {
         }
     };
 
-    const addNews = async (newsData, token) => {
+    const addNews = async (newsData) => {
         try {
-            const res = await fetch(`${API_URL}/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(newsData),
-            });
+            const { data, error } = await supabase
+                .from("news")
+                .insert([newsData])
+                .select();
 
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.msg || "Failed to add news");
-            }
+            if (error) throw error;
 
             await fetchNews();
-            return { success: true, msg: data.msg };
+            return { success: true, msg: "News added", data };
         } catch (err) {
             console.error("Error adding news:", err);
             return { success: false, msg: err.message };
         }
     };
 
-    const updateNews = async (id, updatedData, token) => {
+    const updateNews = async (id, updatedData) => {
         try {
-            const res = await fetch(`${API_URL}/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(updatedData),
-            });
+            const { data, error } = await supabase
+                .from("news")
+                .update(updatedData)
+                .eq("id", id)
+                .select();
 
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.msg || "Failed to update news");
-            }
+            if (error) throw error;
 
             await fetchNews();
-            return { success: true, msg: data.msg };
+            return { success: true, msg: "News updated", data };
         } catch (err) {
             console.error("Error updating news:", err);
             return { success: false, msg: err.message };
         }
     };
 
-    const deleteNews = async (id, token) => {
+    const deleteNews = async (id) => {
         try {
-            const res = await fetch(`${API_URL}/${id}`, {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const { error } = await supabase
+                .from("news")
+                .delete()
+                .eq("id", id);
 
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.msg || "Failed to delete news");
-            }
+            if (error) throw error;
 
             await fetchNews();
-            return { success: true, msg: data.msg };
+            return { success: true, msg: "News deleted" };
         } catch (err) {
             console.error("Error deleting news:", err);
             return { success: false, msg: err.message };
         }
     };
 
-    const uploadNewsImage = async (file, token) => {
-        const formData = new FormData();
-        formData.append("image", file);
-        
+    const uploadNewsImage = async (file) => {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Date.now()}.${fileExt}`;
+        const filePath = `news/${fileName}`;
+
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/upload/news`, {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                body: formData,
-            });
+            const { error: uploadError } = await supabase.storage
+                .from("news")
+                .upload(filePath, file);
 
-            const data = await res.json();
+            if (uploadError) throw uploadError;
 
-            if (!res.ok) throw new Error(data.msg || "News image upload failed");
+            const { data: publicData } = supabase.storage
+                .from("news")
+                .getPublicUrl(filePath);
 
-            return { success: true, url: data.url };
+            return { success: true, url: publicData.publicUrl };
         } catch (err) {
             console.error("Error uploading news image:", err);
             return { success: false, msg: err.message };
         }
     };
 
-    const deleteImage = async (imageUrl, token) => {
+    const deleteImage = async (imageUrl) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/upload`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ image_url: imageUrl }),
-            });
+            const urlParts = imageUrl.split("/");
+            const bucketIndex = urlParts.findIndex(part => part === "news");
+            const filePath = urlParts.slice(bucketIndex + 1).join("/");
 
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.msg || "Image deletion failed");
+            const { error } = await supabase.storage
+                .from("news")
+                .remove([filePath]);
 
-            return { success: true, msg: data.msg };
+            if (error) throw error;
+
+            return { success: true, msg: "Image deleted" };
         } catch (err) {
             console.error("Error deleting image file:", err);
             return { success: false, msg: err.message };

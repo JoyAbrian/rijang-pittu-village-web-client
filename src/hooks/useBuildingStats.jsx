@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
+import { supabase } from "../contexts/supabase";
 import { useLoading } from "../contexts/LoadingContext";
-
-const API_URL = import.meta.env.VITE_API_URL + "/building-statistics";
 
 const useBuildingStats = () => {
     const [rawData, setRawData] = useState([]);
@@ -12,8 +11,12 @@ const useBuildingStats = () => {
         setIsLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${API_URL}/`);
-            const data = await res.json();
+            const { data, error } = await supabase
+                .from("building_statistics")
+                .select("*");
+
+            if (error) throw error;
+
             setRawData(data);
         } catch (err) {
             console.error(err);
@@ -23,31 +26,25 @@ const useBuildingStats = () => {
         }
     };
 
-    const updateStats = async ({ id, total_school, total_hospital, total_religious_places, total_office }, token) => {
+    const updateStats = async ({ id, total_school, total_hospital, total_religious_places, total_office }) => {
         setIsLoading(true);
         try {
-            const res = await fetch(`${API_URL}/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
+            const { data, error } = await supabase
+                .from("building_statistics")
+                .update({
                     total_school,
                     total_hospital,
                     total_religious_places,
                     total_office,
-                }),
-            });
+                })
+                .eq("id", id)
+                .select(); 
 
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.msg || "Failed to update building statistics");
-            }
+            if (error) throw error;
 
             await fetchStats();
-            return { success: true, msg: data.msg };
+
+            return { success: true, msg: "Update successful", data };
         } catch (err) {
             console.error(err);
             return { success: false, msg: err.message };

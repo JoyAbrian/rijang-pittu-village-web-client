@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLoading } from "../contexts/LoadingContext";
-
-const API_URL = import.meta.env.VITE_API_URL + "/events";
+import { supabase } from "../contexts/supabase";
 
 const useEvents = () => {
     const [events, setEvents] = useState([]);
@@ -12,8 +11,13 @@ const useEvents = () => {
         setIsLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${API_URL}/`);
-            const data = await res.json();
+            const { data, error } = await supabase
+                .from("events")
+                .select("*")
+                .order("event_date", { ascending: true });
+
+            if (error) throw error;
+
             setEvents(data);
         } catch (err) {
             console.error(err);
@@ -23,73 +27,52 @@ const useEvents = () => {
         }
     };
 
-    const addEvent = async (eventData, token) => {
+    const addEvent = async (eventData) => {
         try {
-            const res = await fetch(`${API_URL}/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(eventData),
-            });
+            const { data, error } = await supabase
+                .from("events")
+                .insert([eventData])
+                .select();
 
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.msg || "Failed to add event");
-            }
+            if (error) throw error;
 
             await fetchEvents();
-            return { success: true, msg: data.msg };
+            return { success: true, msg: "Event added successfully", data };
         } catch (err) {
             console.error(err);
             return { success: false, msg: err.message };
         }
     };
 
-    const updateEvent = async (id, eventData, token) => {
+    const updateEvent = async (id, eventData) => {
         try {
-            const res = await fetch(`${API_URL}/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(eventData),
-            });
+            const { data, error } = await supabase
+                .from("events")
+                .update(eventData)
+                .eq("id", id)
+                .select();
 
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.msg || "Failed to update event");
-            }
+            if (error) throw error;
 
             await fetchEvents();
-            return { success: true, msg: data.msg };
+            return { success: true, msg: "Event updated successfully", data };
         } catch (err) {
             console.error(err);
             return { success: false, msg: err.message };
         }
     };
 
-    const deleteEvent = async (id, token) => {
+    const deleteEvent = async (id) => {
         try {
-            const res = await fetch(`${API_URL}/${id}`, {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const { error } = await supabase
+                .from("events")
+                .delete()
+                .eq("id", id);
 
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.msg || "Failed to delete event");
-            }
+            if (error) throw error;
 
             await fetchEvents();
-            return { success: true, msg: data.msg };
+            return { success: true, msg: "Event deleted successfully" };
         } catch (err) {
             console.error(err);
             return { success: false, msg: err.message };

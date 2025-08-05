@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLoading } from "../contexts/LoadingContext";
-
-const API_URL = import.meta.env.VITE_API_URL + "/sotk";
+import { supabase } from "../contexts/supabase";
 
 const useSOTK = () => {
     const [sotkList, setSotkList] = useState([]);
@@ -12,130 +11,118 @@ const useSOTK = () => {
         setIsLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${API_URL}/`);
-            if (!res.ok) throw new Error("Failed to fetch SOTK data");
-            const data = await res.json();
+            const { data, error } = await supabase
+                .from("sotk")
+                .select("*")
+                .order("id", { ascending: true });
+
+            if (error) throw error;
             setSotkList(data);
         } catch (err) {
-            console.error(err);
+            console.error("Error fetching SOTK:", err);
             setError("Failed to fetch SOTK data");
         } finally {
             setIsLoading(false);
         }
     };
 
-    const addSOTK = async (newData, token) => {
+    const addSOTK = async (newData) => {
         try {
-            const res = await fetch(`${API_URL}/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(newData),
-            });
+            const { error } = await supabase
+                .from("sotk")
+                .insert([newData])
+                .select();
 
-            const data = await res.json();
-
-            if (!res.ok) throw new Error(data.msg || "Failed to add SOTK");
+            if (error) throw error;
 
             await fetchSOTK();
-            return { success: true, msg: data.msg };
+            return { success: true, msg: "SOTK added" };
         } catch (err) {
-            console.error(err);
+            console.error("Error adding SOTK:", err);
             return { success: false, msg: err.message };
         }
     };
 
-    const updateSOTK = async (id, updatedData, token) => {
+    const updateSOTK = async (id, updatedData) => {
         try {
-            const res = await fetch(`${API_URL}/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(updatedData),
-            });
+            const { error } = await supabase
+                .from("sotk")
+                .update(updatedData)
+                .eq("id", id)
+                .select();
 
-            const data = await res.json();
-
-            if (!res.ok) throw new Error(data.msg || "Failed to update SOTK");
+            if (error) throw error;
 
             await fetchSOTK();
-            return { success: true, msg: data.msg };
+            return { success: true, msg: "SOTK updated" };
         } catch (err) {
-            console.error(err);
+            console.error("Error updating SOTK:", err);
             return { success: false, msg: err.message };
         }
     };
 
-    const deleteSOTK = async (id, token) => {
+    const deleteSOTK = async (id) => {
         try {
-            const res = await fetch(`${API_URL}/${id}`, {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const { error } = await supabase
+                .from("sotk")
+                .delete()
+                .eq("id", id);
 
-            const data = await res.json();
-
-            if (!res.ok) throw new Error(data.msg || "Failed to delete SOTK");
+            if (error) throw error;
 
             await fetchSOTK();
-            return { success: true, msg: data.msg };
+            return { success: true, msg: "SOTK deleted" };
         } catch (err) {
-            console.error(err);
+            console.error("Error deleting SOTK:", err);
             return { success: false, msg: err.message };
         }
     };
 
-    const uploadSOTKImage = async (file, token) => {
-        const formData = new FormData();
-        formData.append("image", file);
-    
+    const uploadSOTKImage = async (file) => {
+        const ext = file.name.split(".").pop();
+        const fileName = `${Date.now()}.${ext}`;
+        const filePath = `sotk/${fileName}`;
+
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/upload/sotk`, {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                body: formData,
-            });
-    
-            const data = await res.json();
-    
-            if (!res.ok) throw new Error(data.msg || "Image upload failed");
-    
-            return { success: true, url: data.url };
+            const { error: uploadError } = await supabase
+                .storage
+                .from("sotk")
+                .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data: publicData } = supabase
+                .storage
+                .from("sotk")
+                .getPublicUrl(filePath);
+
+            return { success: true, url: publicData.publicUrl };
         } catch (err) {
-            console.error(err);
+            console.error("Error uploading image:", err);
             return { success: false, msg: err.message };
         }
     };
 
-    const deleteImage = async (imageUrl, token) => {
+    const deleteImage = async (imageUrl) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/upload`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ image_url: imageUrl }),
-            });
-    
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.msg || "Image deletion failed");
-    
-            return { success: true, msg: data.msg };
+            const parts = imageUrl.split("/");
+            const bucketIndex = parts.findIndex((p) => p === "sotk");
+            const filePath = parts.slice(bucketIndex + 1).join("/");
+
+            const { error } = await supabase
+                .storage
+                .from("sotk")
+                .remove([filePath]);
+
+            if (error) throw error;
+
+            return { success: true, msg: "Image deleted" };
         } catch (err) {
-            console.error(err);
+            console.error("Error deleting image:", err);
             return { success: false, msg: err.message };
         }
     };
-    
+
     useEffect(() => {
         fetchSOTK();
     // eslint-disable-next-line react-hooks/exhaustive-deps

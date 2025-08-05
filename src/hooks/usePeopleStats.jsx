@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-
-const API_URL = import.meta.env.VITE_API_URL + "/people-statistics";
+import { supabase } from "../contexts/supabase";
 
 const usePeopleStats = () => {
     const [rawData, setRawData] = useState([]);
@@ -11,40 +10,37 @@ const usePeopleStats = () => {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${API_URL}/`);
-            const data = await res.json();
+            const { data, error } = await supabase
+                .from("people_statistics")
+                .select("*");
+
+            if (error) throw error;
+
             setRawData(data);
         } catch (err) {
-            setError("Failed to fetch people statistics");
             console.error(err);
+            setError("Failed to fetch people statistics");
         } finally {
             setLoading(false);
         }
     };
 
-    const updateStats = async ({ id, total_man, total_woman, total_householder }, token) => {
+    const updateStats = async ({ id, total_man, total_woman, total_householder }) => {
         try {
-            const res = await fetch(`${API_URL}/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
+            const { data, error } = await supabase
+                .from("people_statistics")
+                .update({
                     total_man,
                     total_woman,
                     total_householder,
-                }),
-            });
+                })
+                .eq("id", id)
+                .select();
 
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.msg || "Failed to update statistics");
-            }
+            if (error) throw error;
 
             await fetchStats();
-            return { success: true, msg: data.msg };
+            return { success: true, msg: "Update successful", data };
         } catch (err) {
             console.error(err);
             return { success: false, msg: err.message };

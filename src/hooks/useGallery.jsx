@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLoading } from "../contexts/LoadingContext";
-
-const API_URL = import.meta.env.VITE_API_URL + "/gallery";
+import { supabase } from "../contexts/supabase";
 
 const useGallery = () => {
     const [gallery, setGallery] = useState([]);
@@ -12,9 +11,13 @@ const useGallery = () => {
         setIsLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${API_URL}/`);
-            if (!res.ok) throw new Error("Failed to fetch gallery items");
-            const data = await res.json();
+            const { data, error } = await supabase
+                .from("gallery")
+                .select("*")
+                .order("id", { ascending: false });
+
+            if (error) throw error;
+
             setGallery(data);
         } catch (err) {
             console.error("Error fetching gallery:", err);
@@ -24,119 +27,102 @@ const useGallery = () => {
         }
     };
 
-    const addGallery = async (newData, token) => {
+    const addGallery = async (newData) => {
         try {
-            const res = await fetch(`${API_URL}/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(newData),
-            });
+            const { data, error } = await supabase
+                .from("gallery")
+                .insert([newData])
+                .select();
 
-            const data = await res.json();
-
-            if (!res.ok) throw new Error(data.msg || "Failed to add gallery item");
+            if (error) throw error;
 
             await fetchGallery();
-            return { success: true, msg: data.msg };
+            return { success: true, msg: "Gallery item added", data };
         } catch (err) {
             console.error("Error adding gallery item:", err);
             return { success: false, msg: err.message };
         }
     };
 
-    const updateGallery = async (id, updatedData, token) => {
+    const updateGallery = async (id, updatedData) => {
         try {
-            const res = await fetch(`${API_URL}/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(updatedData),
-            });
+            const { data, error } = await supabase
+                .from("gallery")
+                .update(updatedData)
+                .eq("id", id)
+                .select();
 
-            const data = await res.json();
-
-            if (!res.ok) throw new Error(data.msg || "Failed to update gallery item");
+            if (error) throw error;
 
             await fetchGallery();
-            return { success: true, msg: data.msg };
+            return { success: true, msg: "Gallery item updated", data };
         } catch (err) {
             console.error("Error updating gallery item:", err);
             return { success: false, msg: err.message };
         }
     };
 
-    const deleteGallery = async (id, token) => {
+    const deleteGallery = async (id) => {
         try {
-            const res = await fetch(`${API_URL}/${id}`, {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const { error } = await supabase
+                .from("gallery")
+                .delete()
+                .eq("id", id);
 
-            const data = await res.json();
-
-            if (!res.ok) throw new Error(data.msg || "Failed to delete gallery item");
+            if (error) throw error;
 
             await fetchGallery();
-            return { success: true, msg: data.msg };
+            return { success: true, msg: "Gallery item deleted" };
         } catch (err) {
             console.error("Error deleting gallery item:", err);
             return { success: false, msg: err.message };
         }
     };
 
+    const uploadGalleryImage = async (file) => {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Date.now()}.${fileExt}`;
+        const filePath = `gallery/${fileName}`;
 
-    const uploadGalleryImage = async (file, token) => {
-        const formData = new FormData();
-        formData.append("image", file);
-        
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/upload/gallery`, {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                body: formData,
-            });
+            const { error: uploadError } = await supabase.storage
+                .from("gallery")
+                .upload(filePath, file);
 
-            const data = await res.json();
+            if (uploadError) throw uploadError;
 
-            if (!res.ok) throw new Error(data.msg || "Gallery image upload failed");
+            const { data: publicUrlData } = supabase.storage
+                .from("gallery")
+                .getPublicUrl(filePath);
 
-            return { success: true, url: data.url };
+            return {
+                success: true,
+                url: publicUrlData.publicUrl,
+            };
         } catch (err) {
             console.error("Error uploading gallery image:", err);
             return { success: false, msg: err.message };
         }
     };
 
-    const deleteImage = async (imageUrl, token) => {
+    const deleteImage = async (imageUrl) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/upload`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ image_url: imageUrl }),
-            });
+            const urlParts = imageUrl.split("/");
+            const bucketIndex = urlParts.findIndex(part => part === "gallery");
+            const filePath = urlParts.slice(bucketIndex + 1).join("/");
 
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.msg || "Image deletion failed");
+            const { error: deleteError } = await supabase.storage
+                .from("gallery")
+                .remove([filePath]);
 
-            return { success: true, msg: data.msg };
+            if (deleteError) throw deleteError;
+
+            return { success: true, msg: "Image deleted" };
         } catch (err) {
             console.error("Error deleting image:", err);
             return { success: false, msg: err.message };
         }
     };
-
 
     useEffect(() => {
         fetchGallery();
