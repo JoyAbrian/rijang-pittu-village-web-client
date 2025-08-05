@@ -50,7 +50,7 @@ const UMKMDetailPageFragment = () => {
                         />
                         <div className="flex-1">
                             <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">
-                                {category?.name || "Kategori tidak diketahui"}
+                                {category?.type_name || "Kategori tidak diketahui"}
                             </span>
                             <h2 className="text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
                                 {currentUMKM.name}
@@ -90,7 +90,7 @@ const UMKMDetailPageFragment = () => {
                                 key={item.id}
                                 id={item.id}
                                 name={item.name}
-                                category={categories.find(cat => cat.id === item.category_id)?.name || "Kategori"}
+                                category={categories.find(cat => cat.id === item.category_id)?.type_name || "Kategori"}
                                 image={item.image_url}
                                 description={item.description.slice(0, 100) + "..."}
                                 priceRange={`Rp${item.price_min.toLocaleString()} - Rp${item.price_max.toLocaleString()}`}

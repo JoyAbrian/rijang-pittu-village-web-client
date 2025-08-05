@@ -3,118 +3,103 @@ import EventForm from "../../elements/Modal/EventForm";
 import ConfirmationModal from "../../elements/Modal/ConfirmationModal";
 import { PlusCircle } from "react-bootstrap-icons";
 import DashboardEventCard from "../../elements/DashboardEventCard";
+import useEvents from "../../../hooks/useEvents";
 
 const DashboardEvent = () => {
     useEffect(() => {
         document.title = "Acara | Dashboard Rijang Pittu"
-    }, [])
+    }, []);
 
-    const [events, setEvents] = useState([
-        {
-            id: 'e1',
-            title: "Festival Kuliner Lokal",
-            location: "Lapangan Kelurahan",
-            date: "2025-07-30",
-            time: "17:00 - 20:00",
-        },
-        {
-            id: 'e2',
-            title: "Sosialisasi Kesehatan Masyarakat",
-            location: "Kantor Kelurahan Rijang Pittu",
-            date: "2025-07-22",
-            time: "08:00 - 10:00",
-        },
-        {
-            id: 'e3',
-            title: "Pelatihan UMKM Digital",
-            location: "Balai Warga RW 3",
-            date: "2025-07-23",
-            time: "13:00 - 16:00",
-        },
-        {
-            id: 'e4',
-            title: "Jumat Bersih",
-            location: "Lingkungan RT 5",
-            date: "2025-07-26",
-            time: "06:00 - 09:00",
-        },
-    ]);
+    const token = localStorage.getItem('token');
+
+    const {
+        events,
+        error,
+        addEvent,
+        updateEvent,
+        deleteEvent,
+    } = useEvents();
 
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
     const [currentEventItem, setCurrentEventItem] = useState(null);
-
-    const [formData, setFormData] = useState({
-        title: '',
-        location: '',
-        date: '',
-        time: '',
-        description: '',
-    });
+    const [eventToDeleteId, setEventToDeleteId] = useState(null);
 
     const handleAddEvent = () => {
         setCurrentEventItem(null);
-        setFormData({ title: '', location: '', date: '', time: '', description: '' });
         setIsFormModalOpen(true);
     };
 
     const handleEditEvent = (event) => {
         setCurrentEventItem(event);
-        setFormData({
-            title: event.title,
-            location: event.location,
-            date: event.date,
-            time: event.time,
-            description: event.description,
-        });
         setIsFormModalOpen(true);
     };
 
     const handleDeleteEvent = (event) => {
+        setEventToDeleteId(event.id);
         setCurrentEventItem(event);
         setIsConfirmationModalOpen(true);
     };
 
-    const handleConfirmDelete = () => {
-        setEvents(events.filter(event => event.id !== currentEventItem.id));
+    const handleConfirmDelete = async () => {
+        if (!eventToDeleteId || !token) {
+            alert("Gagal menghapus: ID acara atau token tidak tersedia.");
+            setIsConfirmationModalOpen(false);
+            return;
+        }
+
+        const result = await deleteEvent(eventToDeleteId, token);
+        if (!result.success) {
+            alert(result.msg);
+        }
         setIsConfirmationModalOpen(false);
+        setEventToDeleteId(null);
         setCurrentEventItem(null);
     };
 
-    const handleSaveEvent = (e) => {
-        e.preventDefault();
-        if (currentEventItem) {
-            setEvents(events.map(event =>
-                event.id === currentEventItem.id ? { ...event, ...formData } : event
-            ));
-        } else {
-            const newEvent = {
-                id: crypto.randomUUID(),
-                ...formData,
-            };
-            setEvents([...events, newEvent]);
+    const handleSaveEvent = async (eventDataFromForm) => {
+        if (!token) {
+            alert("Autentikasi diperlukan untuk menambahkan/mengedit acara.");
+            return;
         }
-        setIsFormModalOpen(false);
-        setFormData({ title: '', location: '', date: '', time: '', description: '' });
-    };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        const payload = {
+            name: eventDataFromForm.title,
+            location: eventDataFromForm.location,
+            event_date: eventDataFromForm.date,
+            start_time: eventDataFromForm.openingHoursStart,
+            end_time: eventDataFromForm.openingHoursEnd,
+        };
+
+        let result;
+        if (currentEventItem) {
+            result = await updateEvent(currentEventItem.id, payload, token);
+        } else {
+            result = await addEvent(payload, token);
+        }
+
+        if (!result.success) {
+            alert(result.msg);
+        }
+
+        setIsFormModalOpen(false);
     };
 
     const formatDateForDisplay = (dateString) => {
         if (!dateString) return '';
         try {
-            const date = new Date(dateString + 'T00:00:00');
+            const date = new Date(dateString);
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             return date.toLocaleDateString('id-ID', options);
+        // eslint-disable-next-line no-unused-vars
         } catch (error) {
-            console.error("Error formatting date:", error);
             return dateString;
         }
     };
 
+    if (error) {
+        return <div className="min-h-screen bg-gray-100 p-6 flex items-center justify-center text-red-600 text-lg">Error: {error}</div>;
+    }
 
     return (
         <div className="flex h-screen bg-gray-100 font-inter">
@@ -131,14 +116,24 @@ const DashboardEvent = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {events.map((event) => (
-                            <DashboardEventCard
-                                key={event.id}
-                                event={{ ...event, date: formatDateForDisplay(event.date) }}
-                                handleEditEvent={handleEditEvent}
-                                handleDeleteEvent={handleDeleteEvent}
-                            />
-                        ))}
+                        {events.length === 0 ? (
+                            <p className="text-gray-600 col-span-full text-center">Belum ada acara.</p>
+                        ) : (
+                            events.map((event) => (
+                                <DashboardEventCard
+                                    key={event.id}
+                                    event={{
+                                        id: event.id,
+                                        title: event.name,
+                                        location: event.location,
+                                        date: formatDateForDisplay(event.event_date),
+                                        time: `${event.start_time || ''} - ${event.end_time || ''}`,
+                                    }}
+                                    handleEditEvent={() => handleEditEvent(event)}
+                                    handleDeleteEvent={() => handleDeleteEvent(event)}
+                                />
+                            ))
+                        )}
                     </div>
                 </main>
             </div>
@@ -147,16 +142,15 @@ const DashboardEvent = () => {
                 isOpen={isFormModalOpen}
                 onClose={() => setIsFormModalOpen(false)}
                 title={currentEventItem ? "Edit Acara" : "Tambah Acara Baru"}
-                formData={formData}
-                handleChange={handleChange}
-                handleSaveEvent={handleSaveEvent}
+                eventData={currentEventItem}
+                onSubmit={handleSaveEvent}
             />
 
             <ConfirmationModal
                 isOpen={isConfirmationModalOpen}
                 onClose={() => setIsConfirmationModalOpen(false)}
                 onConfirm={handleConfirmDelete}
-                message={`Apakah Anda yakin ingin menghapus acara "${currentEventItem?.title}" ini?`}
+                message={`Apakah Anda yakin ingin menghapus acara "${currentEventItem?.name}" ini?`}
             />
         </div>
     );

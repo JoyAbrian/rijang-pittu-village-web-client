@@ -24,7 +24,6 @@ const useEvents = () => {
     };
 
     const addEvent = async (eventData, token) => {
-        setIsLoading(true);
         try {
             const res = await fetch(`${API_URL}/`, {
                 method: "POST",
@@ -46,13 +45,10 @@ const useEvents = () => {
         } catch (err) {
             console.error(err);
             return { success: false, msg: err.message };
-        } finally {
-            setIsLoading(false);
         }
     };
 
     const updateEvent = async (id, eventData, token) => {
-        setIsLoading(true);
         try {
             const res = await fetch(`${API_URL}/${id}`, {
                 method: "PUT",
@@ -74,13 +70,10 @@ const useEvents = () => {
         } catch (err) {
             console.error(err);
             return { success: false, msg: err.message };
-        } finally {
-            setIsLoading(false);
         }
     };
 
     const deleteEvent = async (id, token) => {
-        setIsLoading(true);
         try {
             const res = await fetch(`${API_URL}/${id}`, {
                 method: "DELETE",
@@ -100,8 +93,6 @@ const useEvents = () => {
         } catch (err) {
             console.error(err);
             return { success: false, msg: err.message };
-        } finally {
-            setIsLoading(false);
         }
     };
 

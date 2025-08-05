@@ -43,7 +43,7 @@ const EventPageFragment = () => {
 
     return (
         <section className="px-4 pt-32 pb-20 bg-gray-50 font-poppins">
-            <LoadingScreen/>
+            <LoadingScreen />
             <div className="max-w-7xl mx-auto">
                 <h2 className="text-3xl font-bold text-red-700 mb-4">Agenda Kegiatan</h2>
                 <p className="text-gray-700 mb-8">
@@ -62,7 +62,12 @@ const EventPageFragment = () => {
                                     key={event.id}
                                     name={event.name}
                                     location={event.location}
-                                    eventDate={event.event_date}
+                                    eventDate={new Date(event.event_date).toLocaleDateString("id-ID", {
+                                        weekday: "long",
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                    })}
                                     startTime={event.start_time}
                                     endTime={event.end_time}
                                 />
@@ -73,11 +78,10 @@ const EventPageFragment = () => {
                             <button
                                 onClick={() => handlePageChange(currentPage - 1)}
                                 disabled={currentPage === 1}
-                                className={`px-4 py-2 rounded-full border font-semibold transition ${
-                                    currentPage === 1
+                                className={`px-4 py-2 rounded-full border font-semibold transition ${currentPage === 1
                                         ? "text-gray-400 border-gray-300 cursor-not-allowed"
                                         : "text-green-700 border-green-600 hover:bg-green-100"
-                                }`}
+                                    }`}
                             >
                                 ← Sebelumnya
                             </button>
@@ -86,11 +90,10 @@ const EventPageFragment = () => {
                                 <button
                                     key={i + 1}
                                     onClick={() => handlePageChange(i + 1)}
-                                    className={`w-9 h-9 rounded-full border text-sm font-medium transition ${
-                                        currentPage === i + 1
+                                    className={`w-9 h-9 rounded-full border text-sm font-medium transition ${currentPage === i + 1
                                             ? "bg-green-700 text-white border-green-700"
                                             : "text-green-700 border-green-600 hover:bg-green-100"
-                                    }`}
+                                        }`}
                                 >
                                     {i + 1}
                                 </button>
@@ -99,11 +102,10 @@ const EventPageFragment = () => {
                             <button
                                 onClick={() => handlePageChange(currentPage + 1)}
                                 disabled={currentPage === totalPages}
-                                className={`px-4 py-2 rounded-full border font-semibold transition ${
-                                    currentPage === totalPages
+                                className={`px-4 py-2 rounded-full border font-semibold transition ${currentPage === totalPages
                                         ? "text-gray-400 border-gray-300 cursor-not-allowed"
                                         : "text-green-700 border-green-600 hover:bg-green-100"
-                                }`}
+                                    }`}
                             >
                                 Selanjutnya →
                             </button>
