@@ -1,4 +1,10 @@
 import { useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+    import.meta.env.VITE_SUPABASE_URL,
+    import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 const LoginPageFragment = () => {
     const [username, setUsername] = useState('');
@@ -7,32 +13,35 @@ const LoginPageFragment = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-    
+        setErrorMessage("");
+
         try {
-            const res = await fetch(import.meta.env.VITE_API_URL + "/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ username, password }),
-            });
-    
-            const data = await res.json();
-    
-            if (!res.ok) {
-                throw new Error(data.msg || "Login gagal");
+            const { data, error } = await supabase
+                .from("admin")
+                .select("id, username, password") 
+                .eq("username", username)
+                .single();
+
+            if (error || !data) {
+                throw new Error("Username tidak ditemukan");
             }
-    
-            localStorage.setItem("token", data.access_token);
-    
-            setErrorMessage("");
+
+            const fakeToken = btoa(JSON.stringify({
+                id: data.id,
+                username: data.username,
+                timestamp: Date.now()
+            }));
+
+            localStorage.setItem("token", fakeToken);
+
             alert("Login berhasil!");
             window.location.href = "/dashboard";
         } catch (err) {
+            console.error("Login error:", err.message);
             setErrorMessage(err.message);
         }
     };
-    
+
     return (
         <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 font-sans text-gray-800 p-4 mt-20">
             <div className="flex flex-col lg:flex-row w-full max-w-5xl bg-white rounded-xl shadow-2xl overflow-hidden">
@@ -101,6 +110,6 @@ const LoginPageFragment = () => {
             </div>
         </section>
     );
-}
+};
 
-export default LoginPageFragment
+export default LoginPageFragment;

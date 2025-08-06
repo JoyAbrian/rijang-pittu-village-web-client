@@ -36,7 +36,7 @@ const useNewsDetail = (id) => {
                     .from("news")
                     .select("*")
                     .neq("id", id)
-                    .order("created_at", { ascending: false })
+                    .order("date", { ascending: false })
                     .limit(4);
 
                 if (allNewsError) throw allNewsError;

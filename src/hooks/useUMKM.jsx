@@ -25,7 +25,7 @@ const useUMKM = () => {
 
     const fetchCategories = async () => {
         const { data, error } = await supabase
-            .from("umkm_categories")
+            .from("umkm_category")
             .select("*");
         if (error) {
             console.error("Fetch categories error:", error);
