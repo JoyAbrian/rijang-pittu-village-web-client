@@ -13,16 +13,14 @@ const LandingPageSambutan = () => {
 
                     <div className="flex-1">
                         <h2 className="text-3xl sm:text-4xl font-bold text-red-700 mb-2">Sambutan Kepala Kelurahan</h2>
-                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 tracking-wider">HAIRUDDIN</h3>
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 tracking-wider">Hairuddin, S.A.B</h3>
                         <p className="text-sm sm:text-base font-medium text-gray-600 mb-4">Kepala Kelurahan Rijang Pittu</p>
-                        <p className="font-semibold mb-2 text-base sm:text-lg">Assalamu Alaikum Warohmatullahi Wabarakatuh.</p>
+                        <p className="font-semibold mb-2 text-base sm:text-lg">Assalamu’alaikum Warahmatullahi Wabarakatuh,</p>
                         <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione dolor vitae autem animi,
-                            praesentium reprehenderit obcaecati quae laboriosam ducimus provident, magnam repellat,
-                            sunt voluptatibus explicabo adipisci voluptas amet laborum sit mollitia culpa at.
-                            Molestias, doloribus suscipit labore, soluta repudiandae tenetur eaque cupiditate magnam
-                            vero laborum debitis, voluptatibus aliquam? Esse, sed!
-                        </p>
+                            Selamat datang di Website Resmi Kelurahan Rijang Pittu.
+                            Website ini hadir sebagai sarana informasi dan layanan bagi seluruh warga, sekaligus media transparansi kegiatan pemerintahan di tingkat kelurahan.
+                            Kami berharap website ini dapat bermanfaat dan menjadi jembatan komunikasi antara pemerintah dan masyarakat.
+                            Terima kasih atas dukungan semua pihak. Mari bersama membangun kelurahan yang lebih baik.                        </p>
                     </div>
                 </div>
             </div>
