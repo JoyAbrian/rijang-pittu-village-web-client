@@ -74,7 +74,7 @@ const UMKMDetailPageFragment = () => {
                         <ul className="space-y-3 text-gray-700">
                             <li>📍 {currentUMKM.address}</li>
                             <li>📞 {currentUMKM.contact}</li>
-                            <li>📸 <a href={currentUMKM.instagram} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Instagram</a></li>
+                            <li>🅾 <a href={"https://www.instagram.com/" + currentUMKM.instagram} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Instagram</a></li>
                             <li>🗺️ <a href={currentUMKM.google_maps} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Lihat di Google Maps</a></li>
                         </ul>
                     </div>
