@@ -40,9 +40,8 @@ const ProfilePageVisiMisi = () => {
                                 }`}
                             >
                                 <p className="text-gray-700 leading-relaxed">
-                                    Menjadikan Kelurahan Rijang Pittu sebagai kelurahan
-                                    yang maju, mandiri, dan berdaya saing berbasis pelayanan publik
-                                    dan partisipasi masyarakat.
+                                    Terwujudnya Kelurahan Rijang Pittu sebagai daerah pengembangan kota
+                                    menuju masyarakat cerdas, sehat, terampil, dan religius.
                                 </p>
                             </div>
                         </div>
@@ -63,10 +62,10 @@ const ProfilePageVisiMisi = () => {
                                 }`}
                             >
                                 <div className="text-gray-700 leading-relaxed space-y-2">
-                                    <p>1. Meningkatkan pelayanan publik yang transparan dan akuntabel.</p>
-                                    <p>2. Mengembangkan potensi ekonomi lokal melalui UMKM.</p>
-                                    <p>3. Mendorong partisipasi aktif masyarakat dalam pembangunan.</p>
-                                    <p>4. Memanfaatkan teknologi digital untuk tata kelola kelurahan.</p>
+                                    <p>1. Memberikan pelayanan yang ramah dan santun kepada masyarakat.</p>
+                                    <p>2. Mengoptimalkan pelayanan masyarakat dengan Sistem Pelayanan Satu Atap.</p>
+                                    <p>3. Membina serta membuka kesempatan seluas-luasnya kepada masyarakat untuk mengembangkan potensi yang dimiliki melalui kegiatan pelatihan atau kursus di bidang teknologi.</p>
+                                    <p>4. Membina serta memfasilitasi pada urusan pendidikan kesehatan masyarakat demi terwujudnya masyarakat yang cerdas, sehat, terampil, dan religius.</p>
                                 </div>
                             </div>
                         </div>
