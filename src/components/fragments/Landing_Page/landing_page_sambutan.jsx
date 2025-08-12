@@ -5,7 +5,7 @@ const LandingPageSambutan = () => {
                 <div className="flex flex-col md:flex-row items-center gap-10 w-full max-w-5xl text-center md:text-left">
                     <div className="flex-shrink-0 mb-8 md:mb-0">
                         <img
-                            src="/images/logo-sidenreng-rappang.png"
+                            src="/images/kepala-kelurahan.png"
                             alt="Logo Kelurahan"
                             className="bg-white w-48 h-48 md:w-64 md:h-64 object-contain drop-shadow-md rounded-full mx-auto" // Center image on mobile
                         />
